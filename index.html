@@ -25,12 +25,8 @@
         function createRunner(successFn, failureFn) {
           return new Proxy({}, {
             get: function(target, prop) {
-              if (prop === 'withSuccessHandler') {
-                return function(fn) { return createRunner(fn, failureFn); };
-              }
-              if (prop === 'withFailureHandler') {
-                return function(fn) { return createRunner(successFn, fn); };
-              }
+              if (prop === 'withSuccessHandler') return function(fn) { return createRunner(fn, failureFn); };
+              if (prop === 'withFailureHandler') return function(fn) { return createRunner(successFn, fn); };
               return function() {
                 var args = Array.prototype.slice.call(arguments);
                 fetch(GAS_WEBAPP_URL, {
@@ -38,25 +34,15 @@
                   headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                   body: JSON.stringify({ action: String(prop), args: args })
                 })
-                .then(function(resp) {
-                  if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                  return resp.json();
-                })
-                .then(function(data) {
-                  if (typeof successFn === 'function') successFn(data);
-                })
-                .catch(function(err) {
-                  if (typeof failureFn === 'function') failureFn(err);
-                  else console.error('GAS API Error (' + String(prop) + '):', err);
-                });
+                .then(function(resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.json(); })
+                .then(function(data) { if (typeof successFn === 'function') successFn(data); })
+                .catch(function(err) { if (typeof failureFn === 'function') failureFn(err); else console.error(err); });
               };
             }
           });
         }
         window.google = window.google || {};
-        window.google.script = {
-          get run() { return createRunner(null, null); }
-        };
+        window.google.script = { get run() { return createRunner(null, null); } };
       }
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(function() {});
@@ -756,6 +742,10 @@
                     <option value="เข้าระบบ LTC แล้ว">✅ เข้าระบบ LTC แล้ว</option>
                     <option value="ยังไม่เข้าระบบ LTC">⏳ ยังไม่เข้าระบบ LTC</option>
                   </select>
+                  <label class="flex items-center gap-2 text-xs font-medium text-sky-900 pt-1 cursor-pointer">
+                    <input type="checkbox" id="mapOnlyActive" checked onchange="renderMapMarkers()" class="w-4 h-4 accent-sky-600 rounded">
+                    <span>🟢 เฉพาะเคส "กำลังดูแล" (ซ่อนเคสจำหน่าย)</span>
+                  </label>
                 </div>
 
                 <div class="p-3 rounded-xl bg-sky-50 border border-sky-100 text-xs text-sky-900 flex items-center justify-between">
@@ -873,6 +863,13 @@
                   <option value="">🏥 สถานะ LTC ทั้งหมด</option>
                   <option value="เข้าระบบ LTC แล้ว">✅ เข้าระบบ LTC แล้ว</option>
                   <option value="ยังไม่เข้าระบบ LTC">⏳ ยังไม่เข้าระบบ LTC</option>
+                </select>
+                <select id="filterCaseStatus" onchange="renderManagementTable()" class="px-2.5 py-2 rounded-xl border border-sky-200 text-xs outline-none bg-white font-medium">
+                  <option value="">📋 สถานะเคสทั้งหมด</option>
+                  <option value="กำลังดูแล">🟢 กำลังดูแล</option>
+                  <option value="อาการดีขึ้น/พ้นเกณฑ์">🔵 อาการดีขึ้น/พ้นเกณฑ์</option>
+                  <option value="ย้ายออก">🟡 ย้ายออก</option>
+                  <option value="เสียชีวิต">⚫ เสียชีวิต</option>
                 </select>
               </div>
               <div class="flex items-center gap-2 shrink-0">
@@ -1453,11 +1450,24 @@
             <input type="text" id="editTaiCode" class="w-full px-3 py-2 rounded-xl border border-sky-200 bg-sky-50/40 font-semibold">
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">สถานะ</label>
-            <select id="editStatus" class="w-full px-3 py-2 rounded-xl border border-sky-200 bg-white">
-              <option value="ใช้งาน">ใช้งาน</option>
-              <option value="จำหน่าย">จำหน่าย</option>
+            <label class="block font-medium text-slate-700 mb-1">สถานะเคส (Case Outcome)</label>
+            <select id="editStatus" onchange="toggleEditDischargeFields()" class="w-full px-3 py-2 rounded-xl border border-sky-200 bg-white font-semibold">
+              <option value="กำลังดูแล">🟢 กำลังดูแล</option>
+              <option value="อาการดีขึ้น/พ้นเกณฑ์">🔵 อาการดีขึ้น/พ้นเกณฑ์</option>
+              <option value="ย้ายออก">🟡 ย้ายออก</option>
+              <option value="เสียชีวิต">⚫ เสียชีวิต</option>
             </select>
+          </div>
+        </div>
+
+        <div id="editDischargeWrap" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-xl bg-amber-50/70 border border-amber-200">
+          <div>
+            <label class="block text-xs font-semibold text-amber-900 mb-1">📅 วันที่จำหน่าย / ย้าย / เสียชีวิต</label>
+            <input type="date" id="editDischargeDate" class="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-amber-900 mb-1">📝 หมายเหตุการจำหน่าย</label>
+            <input type="text" id="editDischargeNotes" placeholder="เช่น ย้ายไป อ.แม่สอด / เสียชีวิตที่บ้าน" class="w-full px-3 py-2 rounded-xl border border-amber-200 bg-white text-xs">
           </div>
         </div>
 
@@ -2527,6 +2537,9 @@
       for (var i = 0; i < allRecords.length; i++) {
         var r = allRecords[i];
         if (r.latitude === null || r.longitude === null || isNaN(r.latitude) || isNaN(r.longitude)) continue;
+        var onlyActEl = document.getElementById('mapOnlyActive');
+        var rCaseSt = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
+        if (onlyActEl && onlyActEl.checked && rCaseSt !== 'กำลังดูแล') continue;
         if (natFilter && r.nationality_type !== natFilter) continue;
         if (tambonFilter && r.tambon !== tambonFilter) continue;
         if (enrolledFilter && r.ltc_enrolled !== enrolledFilter) continue;
@@ -3025,6 +3038,10 @@
         if (adl === 'dependent' && r.adl_score > 11) return false;
         if (adl === 'independent' && r.adl_score <= 11) return false;
         if (enrolled && r.ltc_enrolled !== enrolled) return false;
+        var fCaseEl = document.getElementById('filterCaseStatus');
+        var fCase = fCaseEl ? fCaseEl.value : '';
+        var rSt = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
+        if (fCase && rSt !== fCase) return false;
         return true;
       });
     }
@@ -3058,7 +3075,7 @@
           '<td class="px-4 py-3 text-xs text-slate-600"><div>อายุ ' + r.age + ' ปี | ม.' + escapeHtml(r.moo) + ' ต.' + escapeHtml(r.tambon) + '</div><div>🏥 ' + escapeHtml(r.health_unit || '-') + ' | ' + gpsLink + '</div></td>' +
           '<td class="px-4 py-3 text-center">' + adlBadge + '</td>' +
           '<td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 font-semibold text-xs">' + escapeHtml(r.ltc_group) + '</span><span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 font-bold text-xs ml-1">' + escapeHtml(r.tai_group_code || ('TAI ' + r.tai_level)) + '</span></td>' +
-          '<td class="px-4 py-3 text-center">' + ltcBadge + '</td>' +
+          '<td class="px-4 py-3 text-center"><div class="flex flex-col items-center gap-1">' + ltcBadge + getCaseStatusBadgeHtml(r) + '</div></td>' +
           '<td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1">' +
           '<button type="button" onclick="openVisitModal(\'' + r.id + '\')" title="เยี่ยมบ้าน / ติดตาม ADL" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-200">🩺</button>' +
           '<button type="button" onclick="openDetailModal(\'' + r.id + '\')" title="ดูรายละเอียด" class="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-200">👁️</button>' +
@@ -3353,12 +3370,30 @@
         '<div><strong>Care Manager (CM):</strong> ' + escapeHtml(r.care_manager || '-') + '</div>' +
         '<div><strong>กลุ่มผู้สูงอายุ:</strong> ' + escapeHtml(r.ltc_group) + '</div>' +
         '<div><strong>รหัส/ระดับ TAI:</strong> ' + escapeHtml(r.tai_group_code || '-') + ' (ระดับ ' + escapeHtml(r.tai_level) + ')</div>' +
+        '<div><strong>สถานะเคส:</strong> ' + getCaseStatusBadgeHtml(r) + (r.discharge_date ? ' (' + escapeHtml(r.discharge_date) + ')' : '') + '</div>' +
+        (r.discharge_notes ? '<div><strong>หมายเหตุจำหน่าย:</strong> ' + escapeHtml(r.discharge_notes) + '</div>' : '') +
         '<div class="sm:col-span-2"><strong>โรคประจำตัว/หมายเหตุ:</strong> ' + escapeHtml(r.health_notes || '-') + '</div>' +
         '</div>' +
         photosHtml + '<div class="p-4 rounded-2xl border border-sky-100">' +
         '<div class="flex justify-between items-center font-bold text-sky-900 mb-2"><span>📋 ผลประเมิน Barthel ADL รายข้อ</span><span class="text-blue-700">รวม ' + r.adl_score + '/20 (' + escapeHtml(r.adl_status) + ')</span></div>' +
         adlListHtml + '</div>';
       openModal('detailModal');
+    }
+
+
+    function getCaseStatusBadgeHtml(r) {
+      var st = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
+      if (st === 'กำลังดูแล') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">🟢 กำลังดูแล</span>';
+      if (st === 'อาการดีขึ้น/พ้นเกณฑ์') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-100 text-sky-800">🔵 ดีขึ้น/พ้นเกณฑ์</span>';
+      if (st === 'ย้ายออก') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800">🟡 ย้ายออก</span>';
+      if (st === 'เสียชีวิต') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-200 text-slate-700">⚫ เสียชีวิต</span>';
+      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700">' + escapeHtml(st) + '</span>';
+    }
+
+    function toggleEditDischargeFields() {
+      var st = document.getElementById('editStatus').value;
+      var wrap = document.getElementById('editDischargeWrap');
+      if (wrap) wrap.classList.toggle('hidden', st === 'กำลังดูแล');
     }
 
     function openEditModal(id) {
@@ -3398,7 +3433,10 @@
       document.getElementById('editTaiLevel').value = r.tai_level;
       document.getElementById('editTaiCode').value = r.tai_group_code || '';
       document.getElementById('editLtcEnrolled').checked = r.ltc_enrolled === 'เข้าระบบ LTC แล้ว';
-      document.getElementById('editStatus').value = r.status;
+      document.getElementById('editStatus').value = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
+      document.getElementById('editDischargeDate').value = r.discharge_date || '';
+      document.getElementById('editDischargeNotes').value = r.discharge_notes || '';
+      toggleEditDischargeFields();
       document.getElementById('editHealthNotes').value = r.health_notes;
       document.getElementById('editLat').value = r.latitude !== null ? r.latitude : '';
       document.getElementById('editLng').value = r.longitude !== null ? r.longitude : '';
@@ -3448,6 +3486,8 @@
         tai_group_code: document.getElementById('editTaiCode').value.trim(),
         ltc_enrolled: document.getElementById('editLtcEnrolled').checked,
         status: document.getElementById('editStatus').value,
+        discharge_date: document.getElementById('editDischargeDate').value,
+        discharge_notes: document.getElementById('editDischargeNotes').value.trim(),
         health_notes: document.getElementById('editHealthNotes').value.trim(),
         adl_details: adlData.details,
         tai_details: taiDetails
