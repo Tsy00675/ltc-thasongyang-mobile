@@ -170,6 +170,38 @@
 
     <!-- ==================== VIEW 1: FRONTEND REGISTRATION ==================== -->
     <section id="viewFrontend" class="space-y-6">
+      <!-- Live Public Summary Stats -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white rounded-2xl p-3.5 border border-sky-100 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-sky-100 text-xl flex items-center justify-center shrink-0">👥</div>
+          <div>
+            <div class="text-[11px] text-slate-500">ลงทะเบียนทั้งหมด</div>
+            <div id="pubStatTotal" class="text-xl font-bold text-sky-900">-</div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-3.5 border border-sky-100 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-xl flex items-center justify-center shrink-0">🟢</div>
+          <div>
+            <div class="text-[11px] text-slate-500">กำลังดูแล (ใช้งาน)</div>
+            <div id="pubStatActive" class="text-xl font-bold text-emerald-700">-</div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-3.5 border border-sky-100 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-xl flex items-center justify-center shrink-0">✅</div>
+          <div>
+            <div class="text-[11px] text-slate-500">เข้าระบบ LTC แล้ว</div>
+            <div id="pubStatEnrolled" class="text-xl font-bold text-blue-700">-</div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl p-3.5 border border-sky-100 shadow-sm flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-xl flex items-center justify-center shrink-0">🩺</div>
+          <div>
+            <div class="text-[11px] text-slate-500">พึ่งพิง (กำลังดูแล)</div>
+            <div id="pubStatDepActive" class="text-xl font-bold text-amber-700">-</div>
+          </div>
+        </div>
+      </div>
+
       <div id="registrationClosedBanner" class="hidden bg-amber-50 border-2 border-amber-200 rounded-3xl p-8 text-center shadow-sm">
         <div class="text-5xl mb-3">🚧</div>
         <h3 class="text-xl font-bold text-amber-900">ระบบปิดรับการลงทะเบียนชั่วคราว</h3>
@@ -2281,6 +2313,7 @@
 
     function initMapsAndSettings() {
       renderRegPhotosPreview();
+            loadPublicSettings();
       setTimeout(function() {
         initPickerMap('reg', 'regPickerMap', DEFAULT_CENTER[0], DEFAULT_CENTER[1]);
       }, 400);
@@ -2308,6 +2341,13 @@
           if (cfg && Array.isArray(cfg.health_insurances)) {
             currentHealthInsurances = cfg.health_insurances;
             populateHealthInsuranceSelects();
+          }
+          if (cfg && cfg.stats) {
+            var s = cfg.stats;
+            var e1 = document.getElementById('pubStatTotal'); if (e1) e1.textContent = Number(s.total_registered || 0).toLocaleString();
+            var e2 = document.getElementById('pubStatActive'); if (e2) e2.textContent = Number(s.active_care || 0).toLocaleString();
+            var e3 = document.getElementById('pubStatEnrolled'); if (e3) e3.textContent = Number(s.ltc_enrolled || 0).toLocaleString();
+            var e4 = document.getElementById('pubStatDepActive'); if (e4) e4.textContent = Number(s.dependent_active || 0).toLocaleString();
           }
           if (cfg && cfg.allow_public_register === false) {
             document.getElementById('ltcForm').classList.add('hidden');
