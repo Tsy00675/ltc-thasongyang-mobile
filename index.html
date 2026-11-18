@@ -526,6 +526,22 @@
                 <div class="text-xs text-purple-700 mt-0.5">ติดป้ายกำกับเพื่อแยกกรองดูแลเร่งด่วน และจัดสรรเครื่องผลิตออกซิเจน/เตียงผู้ป่วยเป็นลำดับแรก</div>
               </div>
             </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="flex items-start gap-2.5 p-3.5 rounded-2xl border border-amber-200 bg-amber-50/60 cursor-pointer hover:border-amber-400 transition">
+                <input type="checkbox" id="regLivesAlone" class="mt-0.5 w-4 h-4 accent-amber-600 rounded">
+                <div>
+                  <div class="font-bold text-xs text-amber-950">🏠 อยู่คนเดียว (ไร้ผู้ดูแล)</div>
+                  <div class="text-[11px] text-amber-800">ไม่มีผู้ดูแลใกล้ชิดในบ้าน ต้องเร่งช่วยเหลือเมื่อเกิดเหตุ</div>
+                </div>
+              </label>
+              <label class="flex items-start gap-2.5 p-3.5 rounded-2xl border border-rose-200 bg-rose-50/60 cursor-pointer hover:border-rose-400 transition">
+                <input type="checkbox" id="regDisasterRisk" class="mt-0.5 w-4 h-4 accent-rose-600 rounded">
+                <div>
+                  <div class="font-bold text-xs text-rose-950">🌊 บ้านอยู่ในพื้นที่เสี่ยงภัย</div>
+                  <div class="text-[11px] text-rose-800">ริมห้วย / จุดน้ำท่วมซ้ำซาก / พื้นที่ลาดชันดินถล่ม</div>
+                </div>
+              </label>
+            </div>
 
             <div>
               <label class="block text-sm font-medium text-slate-700 mb-1.5">🩺 โรคประจำตัว / ภาวะแทรกซ้อน / หมายเหตุเพิ่มเติม</label>
@@ -620,6 +636,10 @@
             <button type="button" onclick="switchAdminTab('equipment')" id="admTabBtnEquipment"
               class="px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all text-slate-600 hover:bg-sky-50 flex items-center gap-2">
               <span>🦽</span><span>กายอุปกรณ์</span>
+            </button>
+            <button type="button" onclick="switchAdminTab('evac')" id="admTabBtnEvac"
+              class="px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center gap-2">
+              <span>🚑</span><span>อพยพฉุกเฉิน</span>
             </button>
             <button type="button" onclick="switchAdminTab('settings')" id="admTabBtnSettings"
               class="px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all text-slate-600 hover:bg-sky-50 flex items-center gap-2">
@@ -1141,6 +1161,149 @@
           </div>
         </div>
 
+        <!-- SUB-TAB: EMERGENCY EVACUATION MODE -->
+        <div id="admTabEvac" class="hidden space-y-5">
+          <div class="bg-gradient-to-r from-rose-600 to-red-600 rounded-3xl p-5 sm:p-6 text-white shadow-lg flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-xs font-bold mb-2">
+                <span>🚨</span><span>DISASTER RADIUS RADAR &amp; EVACUATION COMMAND</span>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold">ศูนย์บัญชาการภัยพิบัติและอพยพกลุ่มเปราะบาง</h3>
+              <p class="text-xs sm:text-sm text-rose-100 mt-1">จิ้มจุดเกิดเหตุบนแผนที่เพื่อวาดรัศมีภัยพิบัติ คัดกรองกลุ่มเปราะบาง อัปเดตสถานะอพยพ Real-time และสรุปส่งผู้บริหารใน 1 คลิก</p>
+            </div>
+            <div class="flex flex-wrap gap-2 shrink-0">
+              <button type="button" onclick="openShelterModal()" class="px-3.5 py-2.5 rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 text-xs font-bold shadow transition">🏕️ + ศูนย์พักพิง</button>
+              <button type="button" onclick="openEmerContactModal()" class="px-3.5 py-2.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 text-xs font-bold shadow transition">🚁 + กู้ชีพ / ลานจอด ฮ.</button>
+              <button type="button" onclick="openResetEvacModal()" class="px-3.5 py-2.5 rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 text-xs font-bold shadow transition">🔄 จบเหตุการณ์ / รีเซ็ต</button>
+              <button type="button" onclick="printEvacuationA4()" class="px-3.5 py-2.5 rounded-xl bg-white text-rose-700 hover:bg-rose-50 text-xs font-bold shadow transition">🖨️ พิมพ์ A4</button>
+              <button type="button" onclick="openEvacGoogleMaps()" class="px-3.5 py-2.5 rounded-xl bg-amber-400 text-slate-900 hover:bg-amber-300 text-xs font-bold shadow transition">🗺️ นำทาง Maps</button>
+              <button type="button" onclick="copyEvacSummaryLine()" class="px-3.5 py-2.5 rounded-xl bg-slate-900/80 text-white hover:bg-slate-900 text-xs font-bold shadow transition">📋 สรุปส่ง LINE</button>
+              <button type="button" onclick="pushEvacLineOA()" class="px-3.5 py-2.5 rounded-xl bg-sky-500 text-white hover:bg-sky-600 text-xs font-bold shadow transition">📢 แจ้งเตือน OA</button>
+            </div>
+          </div>
+
+          <!-- Disaster Radius Radar Map + Controls -->
+          <div class="bg-white rounded-3xl p-4 sm:p-5 border border-rose-100 shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <h4 class="font-bold text-sm text-rose-950 flex items-center gap-2"><span>🎯</span><span>แผนที่เรดาร์รัศมีภัยพิบัติ &amp; ศูนย์พักพิง (คลิกบนแผนที่เพื่อปักจุดเกิดเหตุ)</span></h4>
+                <p id="evacPinInfo" class="text-xs text-slate-500">ยังไม่ได้ปักจุดเกิดเหตุบนแผนที่ (กำลังแสดงผลตามตัวกรองตำบล/หมู่ด้านล่าง)</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="evacRadiusKm" onchange="renderEvacuationList()" class="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 text-xs font-bold text-rose-900 outline-none">
+                  <option value="">📍 กรองตามตำบล/หมู่ (ไม่จำกัดรัศมี)</option>
+                  <option value="1">🔴 รัศมี 1 กม. รอบจุดเกิดเหตุ</option>
+                  <option value="3">🔴 รัศมี 3 กม. รอบจุดเกิดเหตุ</option>
+                  <option value="5">🔴 รัศมี 5 กม. รอบจุดเกิดเหตุ</option>
+                  <option value="10">🔴 รัศมี 10 กม. รอบจุดเกิดเหตุ</option>
+                </select>
+                <button type="button" onclick="useCurrentGpsForEvac()" class="px-3 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-800 text-xs font-semibold">🎯 จุด GPS ฉัน</button>
+                <button type="button" onclick="clearEvacCenterPin()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">ล้างจุด</button>
+              </div>
+            </div>
+
+            <div id="evacRadarMap" class="w-full rounded-2xl border border-rose-200" style="height: 360px;"></div>
+
+            <!-- Area & Priority Filters -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">📍 ตำบลที่เกิดเหตุ</label>
+                <select id="evacTambon" onchange="renderEvacuationList()" class="w-full px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50/30 text-xs font-semibold text-slate-800 outline-none">
+                  <option value="">🚨 ทุกตำบล (ทั้งอำเภอ)</option>
+                  <option value="แม่ต้าน">ต.แม่ต้าน</option>
+                  <option value="ท่าสองยาง">ต.ท่าสองยาง</option>
+                  <option value="แม่หละ">ต.แม่หละ</option>
+                  <option value="แม่สอง">ต.แม่สอง</option>
+                  <option value="แม่วะหลวง">ต.แม่วะหลวง</option>
+                  <option value="แม่อุสุ">ต.แม่อุสุ</option>
+                  <option value="หนองบัว">ต.หนองบัว</option>
+                  <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">🏘️ หมู่ที่ (เว้นว่าง = ทั้งตำบล)</label>
+                <input type="text" id="evacMoo" oninput="renderEvacuationList()" placeholder="เช่น 1 หรือ 3" class="w-full px-3.5 py-2 rounded-xl border border-rose-200 bg-white text-xs outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">🚑 กลุ่มเปราะบางเป้าหมาย</label>
+                <div class="flex flex-wrap gap-x-3 gap-y-1 pt-1 text-xs">
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkBed" checked onchange="renderEvacuationList()" class="accent-rose-600"><span>🛏️ ติดเตียง</span></label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkPal" checked onchange="renderEvacuationList()" class="accent-purple-600"><span>🕊️ Palliative</span></label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkOxy" checked onchange="renderEvacuationList()" class="accent-sky-600"><span>🫁 ออกซิเจน/เตียง</span></label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkAlone" checked onchange="renderEvacuationList()" class="accent-amber-600"><span>🏠 อยู่คนเดียว</span></label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkRisk" checked onchange="renderEvacuationList()" class="accent-rose-600"><span>🌊 เสี่ยงภัย</span></label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkMod" onchange="renderEvacuationList()" class="accent-amber-600"><span>⚠️ ADL 5-8</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Executive Disaster Snapshot -->
+            <div id="evacExecSnapshot" class="p-4 rounded-2xl bg-slate-900 text-white space-y-2.5 text-xs"></div>
+
+            <!-- Local Emergency Responders & Helipads -->
+            <div id="evacRespondersBox" class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2.5 text-xs"></div>
+
+            <!-- KPI Strip -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-center">
+                <div class="text-xs text-rose-700 font-semibold">🚨 เป้าหมายทั้งหมด</div>
+                <div id="evacKpiTotal" class="text-2xl font-bold text-rose-800 mt-0.5">0</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-red-50 border border-red-200 text-center">
+                <div class="text-xs text-red-700 font-semibold">🛏️ ติดเตียง (ADL ≤ 4)</div>
+                <div id="evacKpiBed" class="text-2xl font-bold text-red-800 mt-0.5">0</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-purple-50 border border-purple-200 text-center">
+                <div class="text-xs text-purple-700 font-semibold">🕊️ Palliative Care</div>
+                <div id="evacKpiPal" class="text-2xl font-bold text-purple-800 mt-0.5">0</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-sky-50 border border-sky-200 text-center">
+                <div class="text-xs text-sky-700 font-semibold">🫁 ออกซิเจน / อุปกรณ์</div>
+                <div id="evacKpiOxy" class="text-2xl font-bold text-sky-800 mt-0.5">0</div>
+              </div>
+            </div>
+
+            <!-- Evacuation Priority Table -->
+            <div class="overflow-x-auto rounded-2xl border border-rose-100">
+              <table class="w-full text-xs sm:text-sm text-left">
+                <thead class="bg-rose-50 text-rose-950 font-semibold border-b border-rose-100">
+                  <tr>
+                    <th class="px-3 py-3 text-center">ความเร่งด่วน</th>
+                    <th class="px-3 py-3">ผู้ป่วย / อายุ</th>
+                    <th class="px-3 py-3">ที่อยู่ / หน่วยบริการ</th>
+                    <th class="px-3 py-3">ผู้ดูแล &amp; เบอร์โทร</th>
+                    <th class="px-3 py-3">อุปกรณ์ &amp; รถขนย้าย</th>
+                    <th class="px-3 py-3 text-center">สถานะอพยพ Real-time</th>
+                    <th class="px-3 py-3 text-center">นำทาง</th>
+                  </tr>
+                </thead>
+                <tbody id="evacTableBody" class="divide-y divide-rose-50"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Disaster Event History & Drills -->
+          <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+            <h4 class="font-bold text-sm text-slate-800 flex items-center gap-2"><span>📜</span><span>ประวัติเหตุการณ์ภัยพิบัติและการซ้อมแผนอพยพย้อนหลัง</span></h4>
+            <div class="overflow-x-auto rounded-2xl border border-slate-100">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-100">
+                  <tr>
+                    <th class="px-3 py-2.5">วันที่</th>
+                    <th class="px-3 py-2.5">ชื่อเหตุการณ์ / ซ้อมแผน</th>
+                    <th class="px-3 py-2.5">พื้นที่</th>
+                    <th class="px-2.5 py-2.5 text-center">เป้าหมาย</th>
+                    <th class="px-2.5 py-2.5 text-center">ปลอดภัย</th>
+                    <th class="px-2.5 py-2.5 text-center">ค้าง/รอ</th>
+                    <th class="px-3 py-2.5">บทเรียน / หมายเหตุ</th>
+                  </tr>
+                </thead>
+                <tbody id="disasterLogsBody" class="divide-y divide-slate-50"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- SUB-TAB 4: SETTINGS -->
         <div id="admTabSettings" class="hidden">
           <div class="bg-white rounded-3xl p-6 sm:p-8 border border-sky-100 shadow-sm max-w-3xl mx-auto space-y-6">
@@ -1521,6 +1684,17 @@
           <span class="font-bold text-purple-900">🕊️ ผู้ป่วยระยะประคับประคอง (Palliative Care — เร่งด่วน)</span>
         </label>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-amber-50 border border-amber-200 cursor-pointer text-xs">
+            <input type="checkbox" id="editLivesAlone" class="w-4 h-4 accent-amber-600">
+            <span class="font-bold text-amber-900">🏠 อยู่คนเดียว (ไร้ผู้ดูแล)</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-rose-50 border border-rose-200 cursor-pointer text-xs">
+            <input type="checkbox" id="editDisasterRisk" class="w-4 h-4 accent-rose-600">
+            <span class="font-bold text-rose-900">🌊 บ้านอยู่ในพื้นที่เสี่ยงภัย</span>
+          </label>
+        </div>
+
         <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-100 space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="font-bold text-sky-900">🛰️ พิกัดบ้านผู้ป่วย (Latitude / Longitude)</span>
@@ -1745,6 +1919,150 @@
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" onclick="closeModal('stockModal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold">ยกเลิก</button>
           <button type="submit" id="btnSaveStock" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm">💾 บันทึกสต๊อก</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Add Safe Shelter Modal -->
+  <div id="shelterModal" class="fixed inset-0 z-[500] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-emerald-100 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-100">
+        <h3 class="text-lg font-bold text-emerald-950">🏕️ เพิ่มศูนย์พักพิงชั่วคราว (Safe Shelter)</h3>
+        <button type="button" onclick="closeModal('shelterModal')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
+      </div>
+      <form onsubmit="return handleSaveShelterSubmit(event);" class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อศูนย์พักพิง / จุดปลอดภัย *</label>
+          <input type="text" id="shName" required placeholder="เช่น รพ.สต.บ้านแม่หละ / ศาลาประชาคมหมู่ 3" class="w-full px-3 py-2 rounded-xl border border-emerald-200 text-xs">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">ตำบล</label>
+            <input type="text" id="shTambon" placeholder="เช่น แม่หละ" class="w-full px-3 py-2 rounded-xl border border-emerald-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">รองรับได้ (คน)</label>
+            <input type="number" id="shCap" value="50" min="1" class="w-full px-3 py-2 rounded-xl border border-emerald-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Latitude *</label>
+            <input type="number" step="any" id="shLat" required class="w-full px-3 py-2 rounded-xl border border-emerald-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Longitude *</label>
+            <input type="number" step="any" id="shLng" required class="w-full px-3 py-2 rounded-xl border border-emerald-200 text-xs">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">หมายเหตุ (เช่น รองรับออกซิเจน/เตียง)</label>
+          <input type="text" id="shNotes" class="w-full px-3 py-2 rounded-xl border border-emerald-200 text-xs">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('shelterModal')" class="px-4 py-2 rounded-xl bg-slate-100 text-xs font-semibold">ยกเลิก</button>
+          <button type="submit" id="btnSaveShelter" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">💾 บันทึกศูนย์พักพิง</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Add Emergency Contact / Helipad Modal -->
+  <div id="emerContactModal" class="fixed inset-0 z-[500] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-indigo-100 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-indigo-100">
+        <h3 class="text-lg font-bold text-indigo-950">🚁 เพิ่มทีมพื้นที่ / พิกัดลานจอด ฮ.</h3>
+        <button type="button" onclick="closeModal('emerContactModal')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
+      </div>
+      <form onsubmit="return handleSaveEmerContactSubmit(event);" class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">ประเภท *</label>
+          <select id="ecRoleType" class="w-full px-3 py-2 rounded-xl border border-indigo-200 bg-white text-xs">
+            <option value="กู้ชีพ อบต.">🚑 กู้ชีพ อบต.</option>
+            <option value="ประธาน อสม.">🩺 ประธาน อสม. / อสม.หมู่บ้าน</option>
+            <option value="CG ประจำหมู่บ้าน">🤝 CG ประจำหมู่บ้าน</option>
+            <option value="กำนัน / ผู้ใหญ่บ้าน">🏛️ กำนัน / ผู้ใหญ่บ้าน</option>
+            <option value="ลานจอด ฮ. (Helipad)">🚁 ลานจอด ฮ. (Helipad)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อผู้ประสานงาน / ชื่อลานจอด ฮ. *</label>
+            <input type="text" id="ecName" required placeholder="เช่น นายสมชาย / ลาน ฮ. ต.แม่หละ" class="w-full px-3 py-2 rounded-xl border border-indigo-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">เบอร์โทรติดต่อ</label>
+            <input type="tel" id="ecPhone" placeholder="08X-XXX-XXXX" class="w-full px-3 py-2 rounded-xl border border-indigo-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">ตำบล *</label>
+            <select id="ecTambon" required class="w-full px-3 py-2 rounded-xl border border-indigo-200 bg-white text-xs">
+              <option value="แม่ต้าน">แม่ต้าน</option>
+              <option value="ท่าสองยาง">ท่าสองยาง</option>
+              <option value="แม่หละ">แม่หละ</option>
+              <option value="แม่สอง">แม่สอง</option>
+              <option value="แม่วะหลวง">แม่วะหลวง</option>
+              <option value="แม่อุสุ">แม่อุสุ</option>
+              <option value="หนองบัว">หนองบัว</option>
+              <option value="อื่นๆ">อื่นๆ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">หมู่ที่</label>
+            <input type="text" id="ecMoo" placeholder="เช่น 3" class="w-full px-3 py-2 rounded-xl border border-indigo-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Latitude (ถ้ามี)</label>
+            <input type="number" step="any" id="ecLat" class="w-full px-3 py-2 rounded-xl border border-indigo-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Longitude (ถ้ามี)</label>
+            <input type="number" step="any" id="ecLng" class="w-full px-3 py-2 rounded-xl border border-indigo-200 text-xs">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">หมายเหตุ (เช่น สภาพลานจอด / วิทยุสื่อสาร)</label>
+          <input type="text" id="ecNotes" class="w-full px-3 py-2 rounded-xl border border-indigo-200 text-xs">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('emerContactModal')" class="px-4 py-2 rounded-xl bg-slate-100 text-xs font-semibold">ยกเลิก</button>
+          <button type="submit" id="btnSaveEc" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">💾 บันทึก</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Archive & Reset Evacuation Modal -->
+  <div id="resetEvacModal" class="fixed inset-0 z-[500] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-amber-200 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-amber-100">
+        <h3 class="text-lg font-bold text-amber-950">🔄 จบเหตุการณ์ / รีเซ็ตสถานะอพยพ</h3>
+        <button type="button" onclick="closeModal('resetEvacModal')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
+      </div>
+      <form onsubmit="return handleArchiveResetEvac(event);" class="space-y-3 text-sm">
+        <div id="resetEvacStatsPreview" class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900"></div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อเหตุการณ์ / การซ้อมแผน *</label>
+          <input type="text" id="rstEventName" required placeholder="เช่น เหตุน้ำป่าไหลหลาก ต.แม่หละ / ซ้อมแผน 2569" class="w-full px-3 py-2 rounded-xl border border-amber-200 text-xs">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">วันที่เกิดเหตุ</label>
+            <input type="date" id="rstEventDate" required class="w-full px-3 py-2 rounded-xl border border-amber-200 text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">พื้นที่</label>
+            <input type="text" id="rstEventArea" required class="w-full px-3 py-2 rounded-xl border border-amber-200 text-xs">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">สรุปบทเรียน / หมายเหตุ</label>
+          <textarea id="rstEventNotes" rows="2" placeholder="ปัญหาอุปสรรคหรือข้อเสนอแนะ..." class="w-full px-3 py-2 rounded-xl border border-amber-200 text-xs"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('resetEvacModal')" class="px-4 py-2 rounded-xl bg-slate-100 text-xs font-semibold">ยกเลิก</button>
+          <button type="submit" id="btnResetEvac" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold">💾 บันทึกประวัติ &amp; รีเซ็ตทั้งหมด</button>
         </div>
       </form>
     </div>
@@ -2311,6 +2629,12 @@
     var allVisits = [];
     var allEquipments = [];
     var allEquipmentStocks = [];
+    var allSafeShelters = [];
+    var allEmergencyContacts = [];
+    var allDisasterLogs = [];
+    var evacRadarMap = null;
+    var evacRadarLayer = null;
+    var evacCenterPin = null;
     var routeQueue = [];
     var currentSettingsCache = {};
     var currentDetailRecord = null;
@@ -2487,7 +2811,7 @@
       if (currentAdminRole === 'facility' && tab === 'settings') {
         tab = 'dashboard';
       }
-      var tabs = ['dashboard', 'map', 'management', 'report', 'equipment', 'settings'];
+      var tabs = ['dashboard', 'map', 'management', 'report', 'equipment', 'evac', 'settings'];
       for (var i = 0; i < tabs.length; i++) {
         var t = tabs[i];
         var cap = t.charAt(0).toUpperCase() + t.slice(1);
@@ -2506,6 +2830,8 @@
           renderEquipmentTable();
       } else if (tab === 'equipment') {
         renderEquipmentTable();
+      } else if (tab === 'evac') {
+        initOrRefreshEvacRadarMap();
       }
     }
 
@@ -2887,6 +3213,8 @@
         tai_level: document.getElementById('regTaiLevelOverride').value,
         ltc_enrolled: document.getElementById('regLtcEnrolled').checked,
         palliative_care: document.getElementById('regPalliativeCare').checked,
+        lives_alone: document.getElementById('regLivesAlone').checked,
+        disaster_risk_area: document.getElementById('regDisasterRisk').checked,
         photos: regSelectedPhotos,
         allow_duplicate: allowDup,
         health_notes: document.getElementById('regHealthNotes').value.trim()
@@ -2988,6 +3316,9 @@
           allVisits = res.visits || [];
           allEquipments = res.equipments || [];
           allEquipmentStocks = res.equipment_stocks || [];
+          allSafeShelters = res.safe_shelters || [];
+          allEmergencyContacts = res.emergency_contacts || [];
+          allDisasterLogs = res.disaster_logs || [];
           currentSettingsCache = res.settings || {};
           populateSettingsForm(res.settings);
           renderDashboard();
@@ -3130,7 +3461,7 @@
           '<td class="px-4 py-3 text-xs text-slate-600"><div>อายุ ' + r.age + ' ปี | ม.' + escapeHtml(r.moo) + ' ต.' + escapeHtml(r.tambon) + '</div><div>🏥 ' + escapeHtml(r.health_unit || '-') + ' | ' + gpsLink + '</div></td>' +
           '<td class="px-4 py-3 text-center">' + adlBadge + '</td>' +
           '<td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 font-semibold text-xs">' + escapeHtml(r.ltc_group) + '</span><span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 font-bold text-xs ml-1">' + escapeHtml(r.tai_group_code || ('TAI ' + r.tai_level)) + '</span></td>' +
-          '<td class="px-4 py-3 text-center"><div class="flex flex-col items-center gap-1">' + ltcBadge + getCaseStatusBadgeHtml(r) + (r.palliative_care ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">🕊️ Palliative</span>' : '') + '</div></td>' +
+          '<td class="px-4 py-3 text-center"><div class="flex flex-col items-center gap-1">' + ltcBadge + getCaseStatusBadgeHtml(r) + (r.palliative_care ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">🕊️ Palliative</span>' : '') + (r.lives_alone ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">🏠 อยู่คนเดียว</span>' : '') + (r.disaster_risk_area ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">🌊 เสี่ยงภัย</span>' : '') + '</div></td>' +
           '<td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1">' +
           '<button type="button" onclick="openVisitModal(\'' + r.id + '\')" title="เยี่ยมบ้าน / ติดตาม ADL" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-200">🩺</button>' +
           '<button type="button" onclick="openDetailModal(\'' + r.id + '\')" title="ดูรายละเอียด" class="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-200">👁️</button>' +
@@ -3489,6 +3820,8 @@
       document.getElementById('editTaiCode').value = r.tai_group_code || '';
       document.getElementById('editLtcEnrolled').checked = r.ltc_enrolled === 'เข้าระบบ LTC แล้ว';
       document.getElementById('editPalliativeCare').checked = r.palliative_care === true;
+      document.getElementById('editLivesAlone').checked = r.lives_alone === true;
+      document.getElementById('editDisasterRisk').checked = r.disaster_risk_area === true;
       document.getElementById('editStatus').value = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
       document.getElementById('editDischargeDate').value = r.discharge_date || '';
       document.getElementById('editDischargeNotes').value = r.discharge_notes || '';
@@ -3542,6 +3875,8 @@
         tai_group_code: document.getElementById('editTaiCode').value.trim(),
         ltc_enrolled: document.getElementById('editLtcEnrolled').checked,
         palliative_care: document.getElementById('editPalliativeCare').checked,
+        lives_alone: document.getElementById('editLivesAlone').checked,
+        disaster_risk_area: document.getElementById('editDisasterRisk').checked,
         status: document.getElementById('editStatus').value,
         discharge_date: document.getElementById('editDischargeDate').value,
         discharge_notes: document.getElementById('editDischargeNotes').value.trim(),
@@ -4529,6 +4864,654 @@
       } else {
         hintEl.innerHTML = '📦 <b>' + escapeHtml(typeEl.value) + '</b> ในสต๊อกมี ' + info.total + ' ชิ้น | กำลังยืม ' + info.borrowed + ' | <span class="text-emerald-700 font-bold">คงเหลือพร้อมจ่าย ' + info.available + ' ชิ้น</span>';
       }
+    }
+
+
+    // === EMERGENCY EVACUATION MODE & DISASTER RADAR ===
+    function calcHaversineKm(lat1, lon1, lat2, lon2) {
+      var R = 6371;
+      var dLat = (lat2 - lat1) * Math.PI / 180;
+      var dLon = (lon2 - lon1) * Math.PI / 180;
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
+
+    function initOrRefreshEvacRadarMap() {
+      if (typeof L === 'undefined') return;
+      var mapEl = document.getElementById('evacRadarMap');
+      if (!mapEl) return;
+      if (!evacRadarMap) {
+        evacRadarMap = L.map('evacRadarMap').setView([17.2286, 98.2275], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(evacRadarMap);
+        evacRadarLayer = L.layerGroup().addTo(evacRadarMap);
+        evacRadarMap.on('click', function(e) {
+          evacCenterPin = { lat: e.latlng.lat, lng: e.latlng.lng };
+          var radSel = document.getElementById('evacRadiusKm');
+          if (radSel && !radSel.value) radSel.value = '3';
+          renderEvacuationList();
+        });
+      }
+      setTimeout(function() { evacRadarMap.invalidateSize(); renderEvacuationList(); }, 180);
+    }
+
+    function useCurrentGpsForEvac() {
+      if (!navigator.geolocation) { showToast('อุปกรณ์ไม่รองรับ GPS', 'error'); return; }
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        evacCenterPin = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        var radSel = document.getElementById('evacRadiusKm');
+        if (radSel && !radSel.value) radSel.value = '3';
+        if (evacRadarMap) evacRadarMap.setView([evacCenterPin.lat, evacCenterPin.lng], 13);
+        renderEvacuationList();
+      }, function() { showToast('ไม่สามารถดึงพิกัด GPS ได้', 'error'); }, { enableHighAccuracy: true });
+    }
+
+    function clearEvacCenterPin() {
+      evacCenterPin = null;
+      var radSel = document.getElementById('evacRadiusKm');
+      if (radSel) radSel.value = '';
+      renderEvacuationList();
+    }
+
+    function getBorrowedEquipByPatient(patientId) {
+      var list = [];
+      for (var i = 0; i < allEquipments.length; i++) {
+        if (allEquipments[i].patient_id === patientId && allEquipments[i].status === 'กำลังยืมใช้งาน') {
+          list.push(allEquipments[i].equipment_type);
+        }
+      }
+      return list;
+    }
+
+    function getEvacuationCandidates() {
+      var tambon = document.getElementById('evacTambon') ? document.getElementById('evacTambon').value : '';
+      var moo = document.getElementById('evacMoo') ? document.getElementById('evacMoo').value.trim() : '';
+      var radiusKmStr = document.getElementById('evacRadiusKm') ? document.getElementById('evacRadiusKm').value : '';
+      var radiusKm = radiusKmStr ? Number(radiusKmStr) : 0;
+      var useRadar = (evacCenterPin && radiusKm > 0);
+
+      var chkBed = document.getElementById('evacChkBed') ? document.getElementById('evacChkBed').checked : true;
+      var chkPal = document.getElementById('evacChkPal') ? document.getElementById('evacChkPal').checked : true;
+      var chkOxy = document.getElementById('evacChkOxy') ? document.getElementById('evacChkOxy').checked : true;
+      var chkAlone = document.getElementById('evacChkAlone') ? document.getElementById('evacChkAlone').checked : true;
+      var chkRisk = document.getElementById('evacChkRisk') ? document.getElementById('evacChkRisk').checked : true;
+      var chkMod = document.getElementById('evacChkMod') ? document.getElementById('evacChkMod').checked : false;
+
+      var results = [];
+      for (var i = 0; i < allRecords.length; i++) {
+        var r = allRecords[i];
+        var rSt = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
+        if (rSt !== 'กำลังดูแล') continue;
+
+        var distKm = null;
+        if (useRadar) {
+          if (r.latitude === null || r.longitude === null || isNaN(r.latitude) || isNaN(r.longitude)) continue;
+          distKm = calcHaversineKm(evacCenterPin.lat, evacCenterPin.lng, r.latitude, r.longitude);
+          if (distKm > radiusKm) continue;
+        } else {
+          if (tambon && r.tambon !== tambon) continue;
+          if (moo && String(r.moo || '').trim() !== moo) continue;
+          if (evacCenterPin && r.latitude !== null && r.longitude !== null) {
+            distKm = calcHaversineKm(evacCenterPin.lat, evacCenterPin.lng, r.latitude, r.longitude);
+          }
+        }
+
+        var eqList = getBorrowedEquipByPatient(r.id);
+        var hasOxyOrBed = eqList.some(function(t) {
+          return t.indexOf('ออกซิเจน') !== -1 || t.indexOf('เตียง') !== -1 || t.indexOf('ดูดเสมหะ') !== -1;
+        });
+        var isBed = Number(r.adl_score) <= 4;
+        var isPal = r.palliative_care === true;
+        var isAlone = r.lives_alone === true;
+        var isRisk = r.disaster_risk_area === true;
+        var isMod = Number(r.adl_score) >= 5 && Number(r.adl_score) <= 8;
+
+        var matched = (chkBed && isBed) || (chkPal && isPal) || (chkOxy && hasOxyOrBed) || (chkAlone && isAlone) || (chkRisk && isRisk) || (chkMod && isMod);
+        if (!matched) continue;
+
+        var priorityScore = 0;
+        if (isPal) priorityScore += 40;
+        if (hasOxyOrBed) priorityScore += 30;
+        if (isBed) priorityScore += 20;
+        if (isAlone) priorityScore += 15;
+        if (isRisk) priorityScore += 12;
+        if (isMod) priorityScore += 10;
+
+        var transportRec = (isBed || isPal || hasOxyOrBed)
+          ? '🚑 รถกู้ชีพ + เปลนอน' + (eqList.some(function(t){ return t.indexOf('ออกซิเจน') !== -1; }) ? ' + ถังออกซิเจนสำรอง' : '')
+          : '🚐 รถกระบะ/รถตู้ + รถเข็น';
+
+        results.push({
+          rec: r,
+          eqList: eqList,
+          isBed: isBed,
+          isPal: isPal,
+          isAlone: isAlone,
+          isRisk: isRisk,
+          hasOxyOrBed: hasOxyOrBed,
+          distKm: distKm,
+          priorityScore: priorityScore,
+          transportRec: transportRec
+        });
+      }
+
+      results.sort(function(a, b) {
+        if (useRadar && a.distKm !== null && b.distKm !== null && Math.abs(a.priorityScore - b.priorityScore) < 5) {
+          return a.distKm - b.distKm;
+        }
+        return b.priorityScore - a.priorityScore;
+      });
+      return results;
+    }
+
+    function drawEvacRadarMap(items) {
+      if (!evacRadarMap || !evacRadarLayer || typeof L === 'undefined') return;
+      evacRadarLayer.clearLayers();
+      var radiusKmStr = document.getElementById('evacRadiusKm') ? document.getElementById('evacRadiusKm').value : '';
+      var radiusKm = radiusKmStr ? Number(radiusKmStr) : 0;
+
+      var infoEl = document.getElementById('evacPinInfo');
+      if (evacCenterPin) {
+        if (infoEl) infoEl.innerHTML = '<span class="text-rose-700 font-bold">🚨 จุดเกิดเหตุ: ' + evacCenterPin.lat.toFixed(5) + ', ' + evacCenterPin.lng.toFixed(5) + (radiusKm ? ' (รัศมี ' + radiusKm + ' กม.)' : '') + '</span>';
+        L.marker([evacCenterPin.lat, evacCenterPin.lng], {
+          icon: L.divIcon({ className: '', html: '<div style="font-size:24px;line-height:1;">🚨</div>', iconSize: [28, 28], iconAnchor: [14, 14] })
+        }).bindPopup('<b>🚨 จุดเกิดเหตุภัยพิบัติ</b>').addTo(evacRadarLayer);
+
+        if (radiusKm > 0) {
+          L.circle([evacCenterPin.lat, evacCenterPin.lng], {
+            radius: radiusKm * 1000,
+            color: '#dc2626',
+            fillColor: '#ef4444',
+            fillOpacity: 0.14,
+            weight: 2
+          }).addTo(evacRadarLayer);
+        }
+      } else if (infoEl) {
+        infoEl.textContent = 'คลิกบนแผนที่เพื่อปักจุดเกิดเหตุและวาดวงกลมรัศมี (1–10 กม.)';
+      }
+
+      // Plot Safe Shelters
+      allSafeShelters.forEach(function(sh) {
+        if (!sh.latitude || !sh.longitude) return;
+        L.marker([sh.latitude, sh.longitude], {
+          icon: L.divIcon({ className: '', html: '<div style="font-size:22px;line-height:1;">🏕️</div>', iconSize: [26, 26], iconAnchor: [13, 13] })
+        }).bindPopup('<b>🏕️ ' + escapeHtml(sh.shelter_name) + '</b><br>รองรับ: ' + (sh.capacity || 0) + ' คน<br>' + escapeHtml(sh.notes || '')).addTo(evacRadarLayer);
+      });
+
+      // Plot Helipads (ลานจอด ฮ.)
+      allEmergencyContacts.forEach(function(ec) {
+        if (ec.role_type !== 'ลานจอด ฮ. (Helipad)' || !ec.latitude || !ec.longitude) return;
+        L.marker([ec.latitude, ec.longitude], {
+          icon: L.divIcon({ className: '', html: '<div style="font-size:22px;line-height:1;">🚁</div>', iconSize: [26, 26], iconAnchor: [13, 13] })
+        }).bindPopup('<b>🚁 ' + escapeHtml(ec.name) + '</b><br>ต.' + escapeHtml(ec.tambon) + ' ม.' + escapeHtml(ec.moo || '-') + (ec.phone ? '<br>📞 ' + escapeHtml(ec.phone) : '') + (ec.notes ? '<br>' + escapeHtml(ec.notes) : '')).addTo(evacRadarLayer);
+      });
+
+      // Plot Vulnerable Patients
+      items.forEach(function(it) {
+        var r = it.rec;
+        if (r.latitude === null || r.longitude === null) return;
+        var st = r.evac_status || 'รออพยพ';
+        var color = st === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว' ? '#10b981' : (st === 'กำลังเข้าช่วยเหลือ' ? '#f59e0b' : '#dc2626');
+        L.circleMarker([r.latitude, r.longitude], {
+          radius: 8, fillColor: color, color: '#fff', weight: 2, fillOpacity: 0.95
+        }).bindPopup(
+          '<b>' + escapeHtml((r.prefix || '') + r.full_name) + '</b><br>' +
+          'สถานะอพยพ: <b>' + escapeHtml(st) + '</b><br>' +
+          (it.distKm !== null ? 'ห่างจุดเกิดเหตุ: <b>' + it.distKm.toFixed(2) + ' กม.</b><br>' : '') +
+          'ADL: ' + r.adl_score + ' | ' + escapeHtml(r.health_unit || '-')
+        ).addTo(evacRadarLayer);
+      });
+    }
+
+    function renderEvacuationList() {
+      var items = getEvacuationCandidates();
+      drawEvacRadarMap(items);
+
+      var tbody = document.getElementById('evacTableBody');
+      var snapEl = document.getElementById('evacExecSnapshot');
+      if (!tbody) return;
+
+      var bedCnt = 0, palCnt = 0, oxyCnt = 0, aloneCnt = 0, riskCnt = 0;
+      var waitCnt = 0, progCnt = 0, safeCnt = 0;
+      var unitMap = {}, areaMap = {};
+
+      items.forEach(function(it) {
+        var r = it.rec;
+        if (it.isBed) bedCnt++;
+        if (it.isPal) palCnt++;
+        if (it.hasOxyOrBed) oxyCnt++;
+        if (it.isAlone) aloneCnt++;
+        if (it.isRisk) riskCnt++;
+
+        var est = r.evac_status || 'รออพยพ';
+        if (est === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว') safeCnt++;
+        else if (est === 'กำลังเข้าช่วยเหลือ') progCnt++;
+        else waitCnt++;
+
+        var hu = r.health_unit || 'ไม่ระบุ';
+        unitMap[hu] = (unitMap[hu] || 0) + 1;
+        var areaKey = 'ต.' + (r.tambon || '-') + ' ม.' + (r.moo || '-');
+        areaMap[areaKey] = (areaMap[areaKey] || 0) + 1;
+      });
+
+      document.getElementById('evacKpiTotal').textContent = items.length;
+      document.getElementById('evacKpiBed').textContent = bedCnt;
+      document.getElementById('evacKpiPal').textContent = palCnt;
+      document.getElementById('evacKpiOxy').textContent = oxyCnt;
+      renderEvacRespondersBox();
+      renderDisasterLogsTable();
+
+      if (snapEl) {
+        var unitChips = Object.keys(unitMap).map(function(u) {
+          return '<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">' + escapeHtml(u) + ': <b>' + unitMap[u] + '</b></span>';
+        }).join(' ');
+        var areaChips = Object.keys(areaMap).map(function(a) {
+          return '<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700">' + escapeHtml(a) + ': <b>' + areaMap[a] + '</b></span>';
+        }).join(' ');
+
+        snapEl.innerHTML =
+          '<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-700 pb-2">' +
+          '  <span class="font-bold text-sm text-amber-300">📊 สรุปด่วนผู้บริหาร: กลุ่มเปราะบางในพื้นที่ ' + items.length + ' ราย</span>' +
+          '  <div class="flex flex-wrap gap-2 font-bold">' +
+          '    <span class="px-2.5 py-0.5 rounded-full bg-rose-600">🔴 รออพยพ: ' + waitCnt + '</span>' +
+          '    <span class="px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950">🟡 กำลังช่วย: ' + progCnt + '</span>' +
+          '    <span class="px-2.5 py-0.5 rounded-full bg-emerald-600">🟢 ปลอดภัยแล้ว: ' + safeCnt + '</span>' +
+          '  </div>' +
+          '</div>' +
+          '<div class="flex flex-wrap gap-3 text-slate-200">' +
+          '  <span>🛏️ ติดเตียง: <b>' + bedCnt + '</b></span>' +
+          '  <span>🕊️ Palliative: <b>' + palCnt + '</b></span>' +
+          '  <span>🫁 ออกซิเจน/เตียง: <b>' + oxyCnt + '</b></span>' +
+          '  <span>🏠 อยู่คนเดียว: <b>' + aloneCnt + '</b></span>' +
+          '  <span>🌊 พื้นที่เสี่ยงภัย: <b>' + riskCnt + '</b></span>' +
+          '</div>' +
+          (unitChips ? '<div class="flex flex-wrap items-center gap-1.5"><span class="text-slate-400">แยกตาม รพ.สต.:</span>' + unitChips + '</div>' : '') +
+          (areaChips ? '<div class="flex flex-wrap items-center gap-1.5"><span class="text-slate-400">แยกตามหมู่บ้าน:</span>' + areaChips + '</div>' : '');
+      }
+
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-slate-400">ไม่พบผู้ป่วยกลุ่มเปราะบางในพื้นที่/รัศมีที่เลือก</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(function(it, idx) {
+        var r = it.rec;
+        var prioBadge = it.priorityScore >= 50
+          ? '<span class="px-2.5 py-1 rounded-full bg-red-600 text-white text-[11px] font-bold">🚨 #' + (idx + 1) + ' ด่วนที่สุด</span>'
+          : (it.priorityScore >= 20
+            ? '<span class="px-2.5 py-1 rounded-full bg-amber-500 text-white text-[11px] font-bold">⚠️ #' + (idx + 1) + ' ด่วนมาก</span>'
+            : '<span class="px-2.5 py-1 rounded-full bg-sky-600 text-white text-[11px] font-bold">#' + (idx + 1) + '</span>');
+
+        var tags = [];
+        if (it.isPal) tags.push('<span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px] font-bold">🕊️ Palliative</span>');
+        if (it.isAlone) tags.push('<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">🏠 อยู่คนเดียว</span>');
+        if (it.isRisk) tags.push('<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 text-[10px] font-bold">🌊 เสี่ยงภัย</span>');
+        tags.push('<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-bold">ADL ' + r.adl_score + '</span>');
+
+        var tel = r.caregiver_phone || r.phone || '';
+        var telHtml = tel
+          ? '<a href="tel:' + escapeHtml(tel) + '" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100">📞 ' + escapeHtml(tel) + '</a>'
+          : '<span class="text-slate-400">ไม่มีเบอร์</span>';
+
+        var gpsHtml = (r.latitude !== null && r.longitude !== null)
+          ? '<a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + ',' + r.longitude + '" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700">📍 นำทาง</a>'
+          : '<span class="text-xs text-rose-500">ไม่มีพิกัด</span>';
+
+        var curEvacSt = r.evac_status || 'รออพยพ';
+        var stSelCls = curEvacSt === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว'
+          ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+          : (curEvacSt === 'กำลังเข้าช่วยเหลือ' ? 'bg-amber-50 border-amber-300 text-amber-800' : 'bg-rose-50 border-rose-300 text-rose-800');
+
+        return '<tr class="hover:bg-rose-50/40 transition">' +
+          '<td class="px-3 py-3 text-center whitespace-nowrap">' + prioBadge + (it.distKm !== null ? '<div class="text-[11px] font-bold text-rose-700 mt-1">📏 ' + it.distKm.toFixed(2) + ' กม.</div>' : '') + '<div class="flex flex-wrap justify-center gap-1 mt-1">' + tags.join('') + '</div></td>' +
+          '<td class="px-3 py-3"><div class="font-bold text-slate-800">' + escapeHtml((r.prefix || '') + r.full_name) + ' (' + r.age + ' ปี)</div><div class="text-[11px] font-mono text-slate-500">' + escapeHtml(r.id) + '</div></td>' +
+          '<td class="px-3 py-3 text-xs text-slate-700"><div>🏠 ' + escapeHtml(r.house_no || '-') + ' ม.' + escapeHtml(r.moo || '-') + ' ต.' + escapeHtml(r.tambon || '-') + '</div><div class="text-sky-700">🏥 ' + escapeHtml(r.health_unit || '-') + '</div></td>' +
+          '<td class="px-3 py-3 text-xs"><div>' + escapeHtml(r.caregiver_name || (it.isAlone ? 'อยู่คนเดียว' : 'ไม่ระบุญาติ')) + '</div><div class="mt-1">' + telHtml + '</div></td>' +
+          '<td class="px-3 py-3 text-xs">' + (it.eqList.length ? '<div class="font-semibold text-sky-800">🫁 ' + escapeHtml(it.eqList.join(', ')) + '</div>' : '') + '<div class="text-rose-700 font-semibold mt-0.5">' + escapeHtml(it.transportRec) + '</div></td>' +
+          '<td class="px-3 py-3 text-center">' +
+          '  <select data-pid="' + escapeHtml(r.id) + '" onchange="changeEvacStatus(this.dataset.pid, this.value)" class="px-2 py-1.5 rounded-xl border text-xs font-bold outline-none ' + stSelCls + '">' +
+          '    <option value="รออพยพ" ' + (curEvacSt === 'รออพยพ' ? 'selected' : '') + '>🔴 รออพยพ</option>' +
+          '    <option value="กำลังเข้าช่วยเหลือ" ' + (curEvacSt === 'กำลังเข้าช่วยเหลือ' ? 'selected' : '') + '>🟡 กำลังเข้าช่วยเหลือ</option>' +
+          '    <option value="ปลอดภัย/ถึงศูนย์พักพิงแล้ว" ' + (curEvacSt === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว' ? 'selected' : '') + '>🟢 ปลอดภัย/ถึงศูนย์ฯ</option>' +
+          '  </select>' +
+          (r.evac_shelter ? '<div class="text-[10px] text-emerald-700 mt-1 font-semibold">🏕️ ' + escapeHtml(r.evac_shelter) + '</div>' : '') +
+          '</td>' +
+          '<td class="px-3 py-3 text-center">' + gpsHtml + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function changeEvacStatus(patientId, newStatus) {
+      var shelter = '';
+      if (newStatus === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว') {
+        var defaultSh = allSafeShelters.length > 0 ? allSafeShelters[0].shelter_name : 'ศูนย์พักพิงชั่วคราว';
+        shelter = prompt('ระบุชื่อศูนย์พักพิง / จุดปลอดภัย (เว้นว่างได้):', defaultSh) || '';
+      }
+      for (var i = 0; i < allRecords.length; i++) {
+        if (allRecords[i].id === patientId) {
+          allRecords[i].evac_status = newStatus;
+          allRecords[i].evac_shelter = shelter;
+          break;
+        }
+      }
+      renderEvacuationList();
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.success) showToast('อัปเดตสถานะอพยพแล้ว', 'success');
+          else showToast((res && res.message) || 'อัปเดตไม่สำเร็จ', 'error');
+        })
+        .updateEvacuationStatus(adminPinSession, patientId, newStatus, shelter);
+    }
+
+    function openShelterModal() {
+      document.getElementById('shName').value = '';
+      document.getElementById('shTambon').value = document.getElementById('evacTambon') ? document.getElementById('evacTambon').value : '';
+      document.getElementById('shCap').value = 50;
+      document.getElementById('shLat').value = evacCenterPin ? evacCenterPin.lat.toFixed(6) : '17.2286';
+      document.getElementById('shLng').value = evacCenterPin ? evacCenterPin.lng.toFixed(6) : '98.2275';
+      document.getElementById('shNotes').value = '';
+      openModal('shelterModal');
+    }
+
+    function handleSaveShelterSubmit(e) {
+      if (e) e.preventDefault();
+      var btn = document.getElementById('btnSaveShelter');
+      btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
+      var payload = {
+        shelter_name: document.getElementById('shName').value.trim(),
+        tambon: document.getElementById('shTambon').value.trim(),
+        capacity: Number(document.getElementById('shCap').value) || 50,
+        latitude: Number(document.getElementById('shLat').value),
+        longitude: Number(document.getElementById('shLng').value),
+        notes: document.getElementById('shNotes').value.trim()
+      };
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false; btn.textContent = '💾 บันทึกศูนย์พักพิง';
+          if (res && res.success) {
+            closeModal('shelterModal');
+            showToast('เพิ่มศูนย์พักพิงเรียบร้อย', 'success');
+            loadAdminData();
+          } else {
+            showToast((res && res.message) || 'บันทึกไม่สำเร็จ', 'error');
+          }
+        })
+        .saveSafeShelter(adminPinSession, payload);
+      return false;
+    }
+
+    function buildEvacTextSummary() {
+      var items = getEvacuationCandidates();
+      var radKm = document.getElementById('evacRadiusKm') ? document.getElementById('evacRadiusKm').value : '';
+      var area = (evacCenterPin && radKm)
+        ? ('รัศมี ' + radKm + ' กม. รอบพิกัด ' + evacCenterPin.lat.toFixed(4) + ',' + evacCenterPin.lng.toFixed(4))
+        : ('ต.' + (document.getElementById('evacTambon').value || 'ทุกตำบล') + (document.getElementById('evacMoo').value.trim() ? ' ม.' + document.getElementById('evacMoo').value.trim() : ''));
+
+      var safeCnt = 0, progCnt = 0, waitCnt = 0;
+      items.forEach(function(it) {
+        var s = it.rec.evac_status || 'รออพยพ';
+        if (s === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว') safeCnt++;
+        else if (s === 'กำลังเข้าช่วยเหลือ') progCnt++;
+        else waitCnt++;
+      });
+
+      var lines = [
+        '🚨 สรุปรายงานภัยพิบัติกลุ่มเปราะบาง (' + area + ')',
+        '📊 รวมทั้งหมด: ' + items.length + ' ราย (🔴 รอ: ' + waitCnt + ' | 🟡 กำลังช่วย: ' + progCnt + ' | 🟢 ปลอดภัย: ' + safeCnt + ')'
+      ];
+      items.slice(0, 20).forEach(function(it, idx) {
+        var r = it.rec;
+        var tel = r.caregiver_phone || r.phone || '-';
+        var mapUrl = (r.latitude && r.longitude) ? ('https://maps.google.com/?q=' + r.latitude + ',' + r.longitude) : 'ไม่มีพิกัด';
+        lines.push((idx + 1) + '. [' + (r.evac_status || 'รออพยพ') + '] ' + (r.prefix || '') + r.full_name + ' (ADL:' + r.adl_score + ') | ม.' + (r.moo || '-') + ' ต.' + (r.tambon || '-') + ' | โทร: ' + tel + ' | ' + mapUrl);
+      });
+      if (items.length > 20) lines.push('...และอีก ' + (items.length - 20) + ' ราย');
+      return lines.join('\n');
+    }
+
+    function copyEvacSummaryLine() {
+      var items = getEvacuationCandidates();
+      if (items.length === 0) { showToast('ไม่มีรายการอพยพ', 'warning'); return; }
+      var txt = buildEvacTextSummary();
+      navigator.clipboard.writeText(txt).then(function() {
+        showToast('คัดลอกสรุปส่ง LINE ผู้บริหาร/กู้ภัยแล้ว', 'success');
+      }).catch(function() { prompt('คัดลอกข้อความด้านล่าง:', txt); });
+    }
+
+    function pushEvacLineOA() {
+      var items = getEvacuationCandidates();
+      if (items.length === 0) { showToast('ไม่มีรายการอพยพ', 'warning'); return; }
+      if (!confirm('ยืนยันส่งสรุปรายงานภัยพิบัติ (' + items.length + ' ราย) เข้า LINE OA ทันที?')) return;
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.success) showToast('ส่งแจ้งเตือนเข้า LINE OA สำเร็จ', 'success');
+          else showToast((res && res.message) || 'ส่ง LINE OA ไม่สำเร็จ', 'error');
+        })
+        .sendEvacuationLineAlert(adminPinSession, buildEvacTextSummary());
+    }
+
+    function openEvacGoogleMaps() {
+      var items = getEvacuationCandidates().filter(function(it) { return it.rec.latitude && it.rec.longitude; });
+      if (items.length === 0) { showToast('ไม่พบพิกัด GPS ของผู้ป่วยในรายการ', 'warning'); return; }
+      var pts = items.slice(0, 9);
+      var dest = pts[pts.length - 1].rec.latitude + ',' + pts[pts.length - 1].rec.longitude;
+      var way = pts.slice(0, -1).map(function(p) { return p.rec.latitude + ',' + p.rec.longitude; }).join('|');
+      window.open('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest) + (way ? '&waypoints=' + encodeURIComponent(way) : ''), '_blank');
+    }
+
+    function printEvacuationA4() {
+      var items = getEvacuationCandidates();
+      if (items.length === 0) { showToast('ไม่มีรายการสำหรับพิมพ์', 'warning'); return; }
+      var radKm = document.getElementById('evacRadiusKm') ? document.getElementById('evacRadiusKm').value : '';
+      var area = (evacCenterPin && radKm)
+        ? ('รัศมี ' + radKm + ' กม. รอบจุดเกิดเหตุ (' + evacCenterPin.lat.toFixed(4) + ', ' + evacCenterPin.lng.toFixed(4) + ')')
+        : ('ต.' + (document.getElementById('evacTambon').value || 'ทุกตำบล') + (document.getElementById('evacMoo').value.trim() ? ' หมู่ที่ ' + document.getElementById('evacMoo').value.trim() : ''));
+      var printDate = new Date().toLocaleString('th-TH');
+
+      var rowsHtml = items.map(function(it, idx) {
+        var r = it.rec;
+        var tel = r.caregiver_phone || r.phone || '-';
+        var gps = (r.latitude && r.longitude) ? (r.latitude.toFixed(5) + ', ' + r.longitude.toFixed(5)) : 'ไม่มีพิกัด';
+        return '<tr>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;text-align:center;font-weight:700;">' + (idx + 1) + '</td>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;"><b>' + escapeHtml((r.prefix || '') + r.full_name) + '</b> (' + r.age + ' ปี)<br><span style="font-size:10px;">ADL:' + r.adl_score + (it.isPal ? ' | Palliative' : '') + (it.isAlone ? ' | อยู่คนเดียว' : '') + '</span></td>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;">' + escapeHtml(r.house_no || '-') + ' ม.' + escapeHtml(r.moo || '-') + ' ต.' + escapeHtml(r.tambon || '-') + '<br><span style="font-size:10px;">' + escapeHtml(r.health_unit || '-') + (it.distKm !== null ? ' · ' + it.distKm.toFixed(2) + ' กม.' : '') + '</span></td>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;">' + escapeHtml(r.caregiver_name || '-') + '<br><b>' + escapeHtml(tel) + '</b></td>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;">' + (it.eqList.length ? escapeHtml(it.eqList.join(', ')) + '<br>' : '') + '<b>' + escapeHtml(it.transportRec) + '</b></td>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;font-family:monospace;font-size:10px;">' + gps + '</td>' +
+          '<td style="border:1px solid #94a3b8;padding:4px 5px;text-align:center;">' + escapeHtml(r.evac_status || 'รออพยพ') + (r.evac_shelter ? '<br><span style="font-size:9px;">(' + escapeHtml(r.evac_shelter) + ')</span>' : '') + '</td>' +
+          '</tr>';
+      }).join('');
+
+      document.getElementById('printSheetArea').innerHTML =
+        '<div style="font-family:Sarabun,sans-serif;font-size:12px;color:#0f172a;">' +
+        '  <div style="text-align:center;border-bottom:2px solid #dc2626;padding-bottom:6px;margin-bottom:10px;">' +
+        '    <div style="font-size:17px;font-weight:700;color:#991b1b;">รายงานสรุปกลุ่มเปราะบางและภารกิจอพยพฉุกเฉิน (เสนอผู้บริหาร/ทีมกู้ภัย)</div>' +
+        '    <div style="font-size:13px;font-weight:700;">พื้นที่: ' + escapeHtml(area) + ' | จำนวน: ' + items.length + ' ราย</div>' +
+        '    <div style="font-size:11px;color:#475569;">พิมพ์เมื่อ: ' + printDate + '</div>' +
+        '  </div>' +
+        '  <table style="width:100%;border-collapse:collapse;font-size:11px;">' +
+        '    <thead><tr style="background:#fee2e2;">' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;width:28px;">ที่</th>' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;">ชื่อ - สกุล / กลุ่ม</th>' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;">ที่อยู่ / หน่วยบริการ</th>' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;">ผู้ดูแล / เบอร์โทร</th>' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;">อุปกรณ์ / รถที่ต้องใช้</th>' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;">พิกัด GPS</th>' +
+        '      <th style="border:1px solid #94a3b8;padding:5px;width:80px;">สถานะอพยพ</th>' +
+        '    </tr></thead>' +
+        '    <tbody>' + rowsHtml + '</tbody>' +
+        '  </table>' +
+        '</div>';
+      window.print();
+    }
+
+
+    function renderEvacRespondersBox() {
+      var box = document.getElementById('evacRespondersBox');
+      if (!box) return;
+      var tambon = document.getElementById('evacTambon') ? document.getElementById('evacTambon').value : '';
+      var moo = document.getElementById('evacMoo') ? document.getElementById('evacMoo').value.trim() : '';
+
+      var matched = allEmergencyContacts.filter(function(c) {
+        if (tambon && c.tambon && c.tambon !== tambon) return false;
+        if (moo && c.moo && String(c.moo).trim() !== moo) return false;
+        return true;
+      });
+
+      if (matched.length === 0) {
+        box.innerHTML = '<div class="flex items-center justify-between"><span class="font-bold text-indigo-950">👥 เบอร์ติดต่อทีมพื้นที่ (อสม. / กู้ชีพ อบต.) &amp; 🚁 ลานจอด ฮ.</span><button type="button" onclick="openEmerContactModal()" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-semibold">+ เพิ่มข้อมูล</button></div><div class="text-slate-500">ยังไม่มีข้อมูลทีมพื้นที่หรือลานจอด ฮ. ในพื้นที่ที่เลือก</div>';
+        return;
+      }
+
+      box.innerHTML =
+        '<div class="flex items-center justify-between"><span class="font-bold text-indigo-950">👥 ทีมพื้นที่พร้อมประสานงาน &amp; 🚁 ลานจอด ฮ. (' + matched.length + ' รายการ)</span><button type="button" onclick="openEmerContactModal()" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-semibold">+ เพิ่ม</button></div>' +
+        '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">' +
+        matched.map(function(c) {
+          var isHeli = c.role_type === 'ลานจอด ฮ. (Helipad)';
+          var icon = isHeli ? '🚁' : (c.role_type.indexOf('กู้ชีพ') !== -1 ? '🚑' : '🩺');
+          return '<div class="p-2.5 rounded-xl bg-white border ' + (isHeli ? 'border-sky-300' : 'border-indigo-200') + ' flex items-start justify-between gap-2">' +
+            '<div>' +
+            '  <div class="font-bold text-slate-800">' + icon + ' ' + escapeHtml(c.name) + '</div>' +
+            '  <div class="text-[11px] text-slate-500">' + escapeHtml(c.role_type) + ' · ต.' + escapeHtml(c.tambon || '-') + ' ม.' + escapeHtml(c.moo || '-') + '</div>' +
+            '  <div class="flex flex-wrap gap-1.5 mt-1">' +
+            (c.phone ? '<a href="tel:' + escapeHtml(c.phone) + '" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">📞 ' + escapeHtml(c.phone) + '</a>' : '') +
+            (c.latitude && c.longitude ? '<a href="https://www.google.com/maps/dir/?api=1&destination=' + c.latitude + ',' + c.longitude + '" target="_blank" class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">📍 พิกัด</a>' : '') +
+            '  </div>' +
+            '</div>' +
+            '<button type="button" data-cid="' + escapeHtml(c.contact_id) + '" onclick="confirmDeleteEmerContact(this.dataset.cid)" class="text-rose-400 hover:text-rose-600 text-xs">✕</button>' +
+            '</div>';
+        }).join('') +
+        '</div>';
+    }
+
+    function openEmerContactModal() {
+      document.getElementById('ecName').value = '';
+      document.getElementById('ecPhone').value = '';
+      var tVal = document.getElementById('evacTambon') ? document.getElementById('evacTambon').value : '';
+      if (tVal) document.getElementById('ecTambon').value = tVal;
+      document.getElementById('ecMoo').value = document.getElementById('evacMoo') ? document.getElementById('evacMoo').value.trim() : '';
+      document.getElementById('ecLat').value = evacCenterPin ? evacCenterPin.lat.toFixed(6) : '';
+      document.getElementById('ecLng').value = evacCenterPin ? evacCenterPin.lng.toFixed(6) : '';
+      document.getElementById('ecNotes').value = '';
+      openModal('emerContactModal');
+    }
+
+    function handleSaveEmerContactSubmit(e) {
+      if (e) e.preventDefault();
+      var btn = document.getElementById('btnSaveEc');
+      btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
+      var payload = {
+        role_type: document.getElementById('ecRoleType').value,
+        name: document.getElementById('ecName').value.trim(),
+        phone: document.getElementById('ecPhone').value.trim(),
+        tambon: document.getElementById('ecTambon').value,
+        moo: document.getElementById('ecMoo').value.trim(),
+        latitude: document.getElementById('ecLat').value.trim(),
+        longitude: document.getElementById('ecLng').value.trim(),
+        notes: document.getElementById('ecNotes').value.trim()
+      };
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false; btn.textContent = '💾 บันทึก';
+          if (res && res.success) {
+            closeModal('emerContactModal');
+            showToast('บันทึกเครือข่าย/ลานจอด ฮ. สำเร็จ', 'success');
+            loadAdminData();
+          } else {
+            showToast((res && res.message) || 'บันทึกไม่สำเร็จ', 'error');
+          }
+        })
+        .saveEmergencyContact(adminPinSession, payload);
+      return false;
+    }
+
+    function confirmDeleteEmerContact(cid) {
+      if (!confirm('ยืนยันลบรายการนี้?')) return;
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.success) { showToast('ลบเรียบร้อย', 'success'); loadAdminData(); }
+        })
+        .deleteEmergencyContact(adminPinSession, cid);
+    }
+
+    function openResetEvacModal() {
+      var items = getEvacuationCandidates();
+      var safeCnt = 0, progCnt = 0, waitCnt = 0;
+      items.forEach(function(it) {
+        var s = it.rec.evac_status || 'รออพยพ';
+        if (s === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว') safeCnt++;
+        else if (s === 'กำลังเข้าช่วยเหลือ') progCnt++;
+        else waitCnt++;
+      });
+      document.getElementById('resetEvacStatsPreview').innerHTML =
+        '<b>สรุปยอดที่จะบันทึกลงประวัติ:</b> เป้าหมาย ' + items.length + ' ราย | 🟢 ปลอดภัย ' + safeCnt + ' | 🟡 กำลังช่วย ' + progCnt + ' | 🔴 รออพยพ ' + waitCnt +
+        '<div class="mt-1 text-rose-700">* หลังบันทึก ระบบจะรีเซ็ตสถานะอพยพของเคสทั้งหมดกลับเป็น "รออพยพ" เพื่อพร้อมรับเหตุการณ์ครั้งใหม่</div>';
+      document.getElementById('rstEventDate').value = new Date().toISOString().slice(0, 10);
+      var t = document.getElementById('evacTambon') ? document.getElementById('evacTambon').value : '';
+      var m = document.getElementById('evacMoo') ? document.getElementById('evacMoo').value.trim() : '';
+      document.getElementById('rstEventArea').value = t ? ('ต.' + t + (m ? ' ม.' + m : '')) : 'อ.ท่าสองยาง';
+      document.getElementById('rstEventName').value = '';
+      document.getElementById('rstEventNotes').value = '';
+      openModal('resetEvacModal');
+    }
+
+    function handleArchiveResetEvac(e) {
+      if (e) e.preventDefault();
+      var items = getEvacuationCandidates();
+      var safeCnt = 0, progCnt = 0, waitCnt = 0;
+      items.forEach(function(it) {
+        var s = it.rec.evac_status || 'รออพยพ';
+        if (s === 'ปลอดภัย/ถึงศูนย์พักพิงแล้ว') safeCnt++;
+        else if (s === 'กำลังเข้าช่วยเหลือ') progCnt++;
+        else waitCnt++;
+      });
+      var btn = document.getElementById('btnResetEvac');
+      btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก & รีเซ็ต...';
+      var payload = {
+        event_name: document.getElementById('rstEventName').value.trim(),
+        event_date: document.getElementById('rstEventDate').value,
+        area: document.getElementById('rstEventArea').value.trim(),
+        total_target: items.length,
+        safe_count: safeCnt,
+        in_progress_count: progCnt,
+        waiting_count: waitCnt,
+        notes: document.getElementById('rstEventNotes').value.trim()
+      };
+      google.script.run
+        .withSuccessHandler(function(res) {
+          btn.disabled = false; btn.textContent = '💾 บันทึกประวัติ & รีเซ็ตทั้งหมด';
+          if (res && res.success) {
+            closeModal('resetEvacModal');
+            showToast(res.message, 'success');
+            loadAdminData();
+          } else {
+            showToast((res && res.message) || 'ดำเนินการไม่สำเร็จ', 'error');
+          }
+        })
+        .archiveAndResetEvacuation(adminPinSession, payload);
+      return false;
+    }
+
+    function renderDisasterLogsTable() {
+      var tbody = document.getElementById('disasterLogsBody');
+      if (!tbody) return;
+      if (!allDisasterLogs || allDisasterLogs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-6 text-slate-400">ยังไม่มีประวัติเหตุการณ์หรือการซ้อมแผน</td></tr>';
+        return;
+      }
+      tbody.innerHTML = allDisasterLogs.map(function(l) {
+        return '<tr class="hover:bg-slate-50">' +
+          '<td class="px-3 py-2.5 whitespace-nowrap">' + escapeHtml(l.event_date) + '</td>' +
+          '<td class="px-3 py-2.5 font-bold text-slate-800">' + escapeHtml(l.event_name) + '</td>' +
+          '<td class="px-3 py-2.5">' + escapeHtml(l.area) + '</td>' +
+          '<td class="px-2.5 py-2.5 text-center font-bold">' + l.total_target + '</td>' +
+          '<td class="px-2.5 py-2.5 text-center font-bold text-emerald-700">' + l.safe_count + '</td>' +
+          '<td class="px-2.5 py-2.5 text-center font-bold text-rose-700">' + (l.waiting_count + l.in_progress_count) + '</td>' +
+          '<td class="px-3 py-2.5 text-slate-600">' + escapeHtml(l.notes || '-') + '</td>' +
+          '</tr>';
+      }).join('');
     }
 
     function renderEquipmentTable() {
