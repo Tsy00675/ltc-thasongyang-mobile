@@ -162,7 +162,7 @@
     <!-- ==================== VIEW 1: FRONTEND REGISTRATION ==================== -->
     <section id="viewFrontend" class="space-y-6">
       <!-- Live Public Summary Stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="bg-white rounded-2xl p-3.5 border border-sky-100 shadow-sm flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-sky-100 text-xl flex items-center justify-center shrink-0">👥</div>
           <div>
@@ -189,13 +189,6 @@
           <div>
             <div class="text-[11px] text-slate-500">พึ่งพิง (กำลังดูแล)</div>
             <div id="pubStatDepActive" class="text-xl font-bold text-amber-700">-</div>
-          </div>
-        </div>
-        <div class="bg-white rounded-2xl p-3.5 border border-sky-100 shadow-sm flex items-center gap-3 col-span-2 sm:col-span-1">
-          <div class="w-10 h-10 rounded-xl bg-teal-100 text-xl flex items-center justify-center shrink-0">♿</div>
-          <div>
-            <div class="text-[11px] text-slate-500">ผู้พิการ (กำลังดูแล)</div>
-            <div id="pubStatDisability" class="text-xl font-bold text-teal-700">-</div>
           </div>
         </div>
       </div>
@@ -249,43 +242,6 @@
               <label class="block text-sm font-medium text-slate-700 mb-1.5">🏳️ ระบุสัญชาติ / เชื้อชาติ</label>
               <input type="text" id="regNatDetail" placeholder="เช่น เมียนมา, ลาว, กะเหรี่ยง, ไร้รัฐ"
                 class="w-full px-4 py-2.5 rounded-xl border border-sky-200 focus:ring-2 focus:ring-sky-400 outline-none bg-sky-50/30">
-            </div>
-
-            <div class="md:col-span-3 p-4 rounded-2xl bg-teal-50/60 border border-teal-200 space-y-3">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                <div>
-                  <label class="block text-sm font-bold text-teal-950 mb-1">♿ ประเภทกลุ่มเปราะบาง *</label>
-                  <select id="regVulnType" onchange="toggleRegDisabilityWrap()" class="w-full px-3.5 py-2.5 rounded-xl border border-teal-300 bg-white text-sm font-semibold text-teal-900 outline-none focus:ring-2 focus:ring-teal-400">
-                    <option value="ผู้สูงอายุ / LTC">👴 ผู้สูงอายุ / ผู้มีภาวะพึ่งพิง (LTC)</option>
-                    <option value="ผู้พิการ">♿ ผู้พิการ</option>
-                    <option value="ผู้สูงอายุและผู้พิการ">👴♿ ทั้งผู้สูงอายุและผู้พิการ</option>
-                  </select>
-                </div>
-                <div id="regDisCardStatusWrap" class="hidden">
-                  <label class="block text-xs font-semibold text-teal-900 mb-1">🪪 สถานะบัตรประจำตัวคนพิการ</label>
-                  <select id="regDisCardStatus" class="w-full px-3 py-2.5 rounded-xl border border-teal-200 bg-white text-xs outline-none">
-                    <option value="มีบัตรคนพิการแล้ว">✅ มีบัตรคนพิการแล้ว</option>
-                    <option value="ยังไม่มีบัตร (รอประสานทำบัตร)">⏳ ยังไม่มีบัตร (รอประสานทำบัตร)</option>
-                    <option value="ไม่ได้ยื่น/ไม่เข้าเกณฑ์">ไม่ได้ยื่น / ไม่เข้าเกณฑ์</option>
-                  </select>
-                </div>
-                <div id="regDisCardNoWrap" class="hidden">
-                  <label class="block text-xs font-semibold text-teal-900 mb-1">🔢 เลขบัตรคนพิการ (ถ้ามี)</label>
-                  <input type="text" id="regDisCardNo" placeholder="ระบุเลขบัตรคนพิการ" class="w-full px-3 py-2.5 rounded-xl border border-teal-200 bg-white text-xs outline-none">
-                </div>
-              </div>
-              <div id="regDisabilityWrap" class="hidden pt-2 border-t border-teal-200/70 space-y-2">
-                <div class="text-xs font-bold text-teal-950">ประเภทความพิการ (เลือกได้มากกว่า 1 ข้อ):</div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ทางการเห็น" class="accent-teal-600"><span>👁️ ทางการเห็น</span></label>
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ทางการได้ยิน/สื่อความหมาย" class="accent-teal-600"><span>👂 ทางการได้ยิน/สื่อความหมาย</span></label>
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ทางการเคลื่อนไหว/ร่างกาย" class="accent-teal-600"><span>🦽 ทางการเคลื่อนไหว/ร่างกาย</span></label>
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ทางจิตใจ/พฤติกรรม" class="accent-teal-600"><span>🧠 ทางจิตใจ/พฤติกรรม</span></label>
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ทางสติปัญญา" class="accent-teal-600"><span>💡 ทางสติปัญญา</span></label>
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ทางการเรียนรู้" class="accent-teal-600"><span>📖 ทางการเรียนรู้</span></label>
-                  <label class="flex items-center gap-1.5 bg-white px-2.5 py-2 rounded-xl border border-teal-200 cursor-pointer"><input type="checkbox" name="reg_dis_type" value="ออทิสติก" class="accent-teal-600"><span>🧩 ออทิสติก</span></label>
-                </div>
-              </div>
             </div>
 
             <div>
@@ -933,7 +889,6 @@
                   <option value="ย้ายออก">🟡 ย้ายออก</option>
                   <option value="เสียชีวิต">⚫ เสียชีวิต</option>
                   <option value="palliative">🕊️ เฉพาะเคส Palliative</option>
-                  <option value="disability">♿ เฉพาะผู้พิการ</option>
                 </select>
               </div>
               <div class="flex items-center gap-2 shrink-0">
@@ -1236,7 +1191,6 @@
                   <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkOxy" checked onchange="renderEvacuationList()" class="accent-sky-600"><span>🫁 ออกซิเจน/เตียง</span></label>
                   <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkAlone" checked onchange="renderEvacuationList()" class="accent-amber-600"><span>🏠 อยู่คนเดียว</span></label>
                   <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkRisk" checked onchange="renderEvacuationList()" class="accent-rose-600"><span>🌊 เสี่ยงภัย</span></label>
-                  <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkDis" checked onchange="renderEvacuationList()" class="accent-teal-600"><span>♿ ผู้พิการ</span></label>
                   <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="evacChkMod" onchange="renderEvacuationList()" class="accent-amber-600"><span>⚠️ ADL 5-8</span></label>
                 </div>
               </div>
@@ -1708,39 +1662,6 @@
           </label>
         </div>
 
-        <div class="p-3 rounded-xl bg-teal-50/70 border border-teal-200 space-y-2.5 text-xs">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div>
-              <label class="block font-bold text-teal-900 mb-1">♿ กลุ่มเปราะบาง</label>
-              <select id="editVulnType" onchange="toggleEditDisabilityWrap()" class="w-full px-2.5 py-2 rounded-xl border border-teal-200 bg-white font-semibold">
-                <option value="ผู้สูงอายุ / LTC">👴 ผู้สูงอายุ / LTC</option>
-                <option value="ผู้พิการ">♿ ผู้พิการ</option>
-                <option value="ผู้สูงอายุและผู้พิการ">👴♿ ทั้งผู้สูงอายุและผู้พิการ</option>
-              </select>
-            </div>
-            <div id="editDisCardStatusWrap" class="hidden">
-              <label class="block font-semibold text-teal-900 mb-1">🪪 บัตรคนพิการ</label>
-              <select id="editDisCardStatus" class="w-full px-2.5 py-2 rounded-xl border border-teal-200 bg-white">
-                <option value="มีบัตรคนพิการแล้ว">✅ มีบัตรแล้ว</option>
-                <option value="ยังไม่มีบัตร (รอประสานทำบัตร)">⏳ ยังไม่มีบัตร</option>
-                <option value="ไม่ได้ยื่น/ไม่เข้าเกณฑ์">ไม่ได้ยื่น</option>
-              </select>
-            </div>
-            <div id="editDisCardNoWrap" class="hidden">
-              <label class="block font-semibold text-teal-900 mb-1">🔢 เลขบัตรคนพิการ</label>
-              <input type="text" id="editDisCardNo" class="w-full px-2.5 py-2 rounded-xl border border-teal-200 bg-white">
-            </div>
-          </div>
-          <div id="editDisabilityWrap" class="hidden flex flex-wrap gap-2 pt-1">
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ทางการเห็น" class="accent-teal-600"><span>👁️ ทางการเห็น</span></label>
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ทางการได้ยิน/สื่อความหมาย" class="accent-teal-600"><span>👂 ได้ยิน/สื่อความหมาย</span></label>
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ทางการเคลื่อนไหว/ร่างกาย" class="accent-teal-600"><span>🦽 เคลื่อนไหว/ร่างกาย</span></label>
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ทางจิตใจ/พฤติกรรม" class="accent-teal-600"><span>🧠 จิตใจ/พฤติกรรม</span></label>
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ทางสติปัญญา" class="accent-teal-600"><span>💡 สติปัญญา</span></label>
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ทางการเรียนรู้" class="accent-teal-600"><span>📖 เรียนรู้</span></label>
-            <label class="inline-flex items-center gap-1"><input type="checkbox" name="edit_dis_type" value="ออทิสติก" class="accent-teal-600"><span>🧩 ออทิสติก</span></label>
-          </div>
-        </div>
 
         <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-100 space-y-2.5">
           <div class="flex items-center justify-between">
@@ -2753,7 +2674,6 @@
             var e2 = document.getElementById('pubStatActive'); if (e2) e2.textContent = Number(s.active_care || 0).toLocaleString();
             var e3 = document.getElementById('pubStatEnrolled'); if (e3) e3.textContent = Number(s.ltc_enrolled || 0).toLocaleString();
             var e4 = document.getElementById('pubStatDepActive'); if (e4) e4.textContent = Number(s.dependent_active || 0).toLocaleString();
-            var e5 = document.getElementById('pubStatDisability'); if (e5) e5.textContent = Number(s.disability_active || 0).toLocaleString();
           }
           if (cfg && cfg.allow_public_register === false) {
             document.getElementById('ltcForm').classList.add('hidden');
@@ -3242,29 +3162,6 @@
     }
 
 
-    function toggleRegDisabilityWrap() {
-      var v = document.getElementById('regVulnType').value;
-      var show = v.indexOf('ผู้พิการ') !== -1;
-      document.getElementById('regDisabilityWrap').classList.toggle('hidden', !show);
-      document.getElementById('regDisCardStatusWrap').classList.toggle('hidden', !show);
-      document.getElementById('regDisCardNoWrap').classList.toggle('hidden', !show);
-    }
-
-    function toggleEditDisabilityWrap() {
-      var v = document.getElementById('editVulnType').value;
-      var show = v.indexOf('ผู้พิการ') !== -1;
-      document.getElementById('editDisabilityWrap').classList.toggle('hidden', !show);
-      document.getElementById('editDisCardStatusWrap').classList.toggle('hidden', !show);
-      document.getElementById('editDisCardNoWrap').classList.toggle('hidden', !show);
-    }
-
-    function getCheckedValuesByName(name) {
-      var arr = [];
-      var els = document.querySelectorAll('input[name="' + name + '"]:checked');
-      for (var i = 0; i < els.length; i++) arr.push(els[i].value);
-      return arr;
-    }
-
     function handleRegisterSubmit(e) {
       if (e) e.preventDefault();
       var allowDup = false;
@@ -3314,10 +3211,6 @@
         palliative_care: document.getElementById('regPalliativeCare').checked,
         lives_alone: document.getElementById('regLivesAlone').checked,
         disaster_risk_area: document.getElementById('regDisasterRisk').checked,
-        vulnerable_type: document.getElementById('regVulnType').value,
-        disability_card_status: document.getElementById('regDisCardStatus').value,
-        disability_card_no: document.getElementById('regDisCardNo').value.trim(),
-        disability_types: getCheckedValuesByName('reg_dis_type'),
         photos: regSelectedPhotos,
         allow_duplicate: allowDup,
         health_notes: document.getElementById('regHealthNotes').value.trim()
@@ -3343,7 +3236,6 @@
             var dupBox = document.getElementById('regDupAlert'); if (dupBox) dupBox.classList.add('hidden');
             renderRegPhotosPreview();
             toggleNationalityFields();
-            toggleRegDisabilityWrap();
             renderAdlForm('regAdlContainer', 'reg', {});
             renderTaiForm('regTaiContainer', 'reg', { mobility: 3, mental: 4, eat: 4, toilet: 4 });
             evaluateAdlAndTai('reg');
@@ -3541,7 +3433,6 @@
         var fCase = fCaseEl ? fCaseEl.value : '';
         var rSt = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
         if (fCase === 'palliative') { if (!r.palliative_care) return false; }
-        else if (fCase === 'disability') { if (String(r.vulnerable_type || '').indexOf('ผู้พิการ') === -1) return false; }
         else if (fCase && rSt !== fCase) return false;
         return true;
       });
@@ -3576,7 +3467,7 @@
           '<td class="px-4 py-3 text-xs text-slate-600"><div>อายุ ' + r.age + ' ปี | ม.' + escapeHtml(r.moo) + ' ต.' + escapeHtml(r.tambon) + '</div><div>🏥 ' + escapeHtml(r.health_unit || '-') + ' | ' + gpsLink + '</div></td>' +
           '<td class="px-4 py-3 text-center">' + adlBadge + '</td>' +
           '<td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded-lg bg-sky-100 text-sky-900 font-semibold text-xs">' + escapeHtml(r.ltc_group) + '</span><span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-800 font-bold text-xs ml-1">' + escapeHtml(r.tai_group_code || ('TAI ' + r.tai_level)) + '</span></td>' +
-          '<td class="px-4 py-3 text-center"><div class="flex flex-col items-center gap-1">' + ltcBadge + getCaseStatusBadgeHtml(r) + (r.palliative_care ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">🕊️ Palliative</span>' : '') + (r.lives_alone ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">🏠 อยู่คนเดียว</span>' : '') + (r.disaster_risk_area ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">🌊 เสี่ยงภัย</span>' : '') + (String(r.vulnerable_type || '').indexOf('ผู้พิการ') !== -1 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800">♿ ผู้พิการ</span>' : '') + '</div></td>' +
+          '<td class="px-4 py-3 text-center"><div class="flex flex-col items-center gap-1">' + ltcBadge + getCaseStatusBadgeHtml(r) + (r.palliative_care ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">🕊️ Palliative</span>' : '') + (r.lives_alone ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">🏠 อยู่คนเดียว</span>' : '') + (r.disaster_risk_area ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">🌊 เสี่ยงภัย</span>' : '') + '</div></td>' +
           '<td class="px-4 py-3 text-center"><div class="flex items-center justify-center gap-1">' +
           '<button type="button" onclick="openVisitModal(\'' + r.id + '\')" title="เยี่ยมบ้าน / ติดตาม ADL" class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-200">🩺</button>' +
           '<button type="button" onclick="openDetailModal(\'' + r.id + '\')" title="ดูรายละเอียด" class="p-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-200">👁️</button>' +
@@ -3871,7 +3762,7 @@
         '<div><strong>Care Manager (CM):</strong> ' + escapeHtml(r.care_manager || '-') + '</div>' +
         '<div><strong>กลุ่มผู้สูงอายุ:</strong> ' + escapeHtml(r.ltc_group) + '</div>' +
         '<div><strong>รหัส/ระดับ TAI:</strong> ' + escapeHtml(r.tai_group_code || '-') + ' (ระดับ ' + escapeHtml(r.tai_level) + ')</div>' +
-        '<div><strong>กลุ่มเปราะบาง:</strong> ' + escapeHtml(r.vulnerable_type || 'ผู้สูงอายุ / LTC') + (r.disability_types ? ' (' + escapeHtml(r.disability_types) + ')' : '') + '</div>' + (r.disability_card_status ? '<div><strong>บัตรคนพิการ:</strong> ' + escapeHtml(r.disability_card_status) + (r.disability_card_no ? ' (' + escapeHtml(r.disability_card_no) + ')' : '') + '</div>' : '') + '<div><strong>สถานะเคส:</strong> ' + getCaseStatusBadgeHtml(r) + (r.palliative_care ? ' <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">🕊️ Palliative Care</span>' : '') + (r.discharge_date ? ' (' + escapeHtml(r.discharge_date) + ')' : '') + '</div>' +
+        '<div><strong>สถานะเคส:</strong> ' + getCaseStatusBadgeHtml(r) + (r.palliative_care ? ' <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">🕊️ Palliative Care</span>' : '') + (r.discharge_date ? ' (' + escapeHtml(r.discharge_date) + ')' : '') + '</div>' +
         (r.discharge_notes ? '<div><strong>หมายเหตุจำหน่าย:</strong> ' + escapeHtml(r.discharge_notes) + '</div>' : '') +
         '<div class="sm:col-span-2"><strong>โรคประจำตัว/หมายเหตุ:</strong> ' + escapeHtml(r.health_notes || '-') + '</div>' +
         '</div>' +
@@ -3937,15 +3828,6 @@
       document.getElementById('editPalliativeCare').checked = r.palliative_care === true;
       document.getElementById('editLivesAlone').checked = r.lives_alone === true;
       document.getElementById('editDisasterRisk').checked = r.disaster_risk_area === true;
-      document.getElementById('editVulnType').value = r.vulnerable_type || 'ผู้สูงอายุ / LTC';
-      document.getElementById('editDisCardStatus').value = r.disability_card_status || 'มีบัตรคนพิการแล้ว';
-      document.getElementById('editDisCardNo').value = r.disability_card_no || '';
-      var disArr = (r.disability_types || '').split(',').map(function(s){ return s.trim(); });
-      var edDisEls = document.querySelectorAll('input[name="edit_dis_type"]');
-      for (var d = 0; d < edDisEls.length; d++) {
-        edDisEls[d].checked = disArr.indexOf(edDisEls[d].value) !== -1;
-      }
-      toggleEditDisabilityWrap();
       document.getElementById('editStatus').value = (!r.status || r.status === 'ใช้งาน') ? 'กำลังดูแล' : r.status;
       document.getElementById('editDischargeDate').value = r.discharge_date || '';
       document.getElementById('editDischargeNotes').value = r.discharge_notes || '';
@@ -4001,10 +3883,6 @@
         palliative_care: document.getElementById('editPalliativeCare').checked,
         lives_alone: document.getElementById('editLivesAlone').checked,
         disaster_risk_area: document.getElementById('editDisasterRisk').checked,
-        vulnerable_type: document.getElementById('editVulnType').value,
-        disability_card_status: document.getElementById('editDisCardStatus').value,
-        disability_card_no: document.getElementById('editDisCardNo').value.trim(),
-        disability_types: getCheckedValuesByName('edit_dis_type'),
         status: document.getElementById('editStatus').value,
         discharge_date: document.getElementById('editDischargeDate').value,
         discharge_notes: document.getElementById('editDischargeNotes').value.trim(),
@@ -5140,7 +5018,6 @@
       var chkOxy = document.getElementById('evacChkOxy') ? document.getElementById('evacChkOxy').checked : true;
       var chkAlone = document.getElementById('evacChkAlone') ? document.getElementById('evacChkAlone').checked : true;
       var chkRisk = document.getElementById('evacChkRisk') ? document.getElementById('evacChkRisk').checked : true;
-      var chkDis = document.getElementById('evacChkDis') ? document.getElementById('evacChkDis').checked : true;
       var chkMod = document.getElementById('evacChkMod') ? document.getElementById('evacChkMod').checked : false;
 
       var results = [];
@@ -5170,10 +5047,9 @@
         var isPal = r.palliative_care === true;
         var isAlone = r.lives_alone === true;
         var isRisk = r.disaster_risk_area === true;
-        var isDis = String(r.vulnerable_type || '').indexOf('ผู้พิการ') !== -1;
         var isMod = Number(r.adl_score) >= 5 && Number(r.adl_score) <= 8;
 
-        var matched = (chkBed && isBed) || (chkPal && isPal) || (chkOxy && hasOxyOrBed) || (chkAlone && isAlone) || (chkRisk && isRisk) || (chkDis && isDis) || (chkMod && isMod);
+        var matched = (chkBed && isBed) || (chkPal && isPal) || (chkOxy && hasOxyOrBed) || (chkAlone && isAlone) || (chkRisk && isRisk) || (chkMod && isMod);
         if (!matched) continue;
 
         var priorityScore = 0;
@@ -5195,7 +5071,6 @@
           isPal: isPal,
           isAlone: isAlone,
           isRisk: isRisk,
-          isDis: isDis,
           hasOxyOrBed: hasOxyOrBed,
           distKm: distKm,
           priorityScore: priorityScore,
@@ -5354,7 +5229,6 @@
         if (it.isPal) tags.push('<span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px] font-bold">🕊️ Palliative</span>');
         if (it.isAlone) tags.push('<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">🏠 อยู่คนเดียว</span>');
         if (it.isRisk) tags.push('<span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 text-[10px] font-bold">🌊 เสี่ยงภัย</span>');
-        if (it.isDis) tags.push('<span class="px-1.5 py-0.5 rounded bg-teal-100 text-teal-800 text-[10px] font-bold">♿ ' + escapeHtml(r.disability_types || 'ผู้พิการ') + '</span>');
         tags.push('<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-bold">ADL ' + r.adl_score + '</span>');
 
         var tel = r.caregiver_phone || r.phone || '';
