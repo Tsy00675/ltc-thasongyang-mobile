@@ -32,6 +32,9 @@
                 var args = Array.prototype.slice.call(arguments);
                 fetch(GAS_WEBAPP_URL, {
                   method: 'POST',
+                  mode: 'cors',
+                  redirect: 'follow',
+                  credentials: 'omit',
                   headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                   body: JSON.stringify({ action: String(prop), args: args })
                 })
