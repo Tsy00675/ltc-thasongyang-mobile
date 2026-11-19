@@ -1337,6 +1337,22 @@
                 <div id="settingsHealthInsurancesList" class="flex flex-wrap gap-2 pt-1"></div>
               </div>
 
+              <div class="p-4 rounded-2xl bg-sky-50/50 border border-sky-100 space-y-3">
+                <div>
+                  <div class="font-semibold text-sm text-slate-800">📍 ตั้งค่ารายชื่อตำบล (เพิ่ม / ลบได้)</div>
+                  <div class="text-xs text-slate-500">เพิ่มหรือลบรายชื่อตำบลที่จะแสดงในหน้าลงทะเบียน, หน้าแก้ไข, ตัวกรอง, แผนที่ และโหมดภัยพิบัติ</div>
+                </div>
+                <div class="flex gap-2">
+                  <input type="text" id="newTambonInput" placeholder="พิมพ์ชื่อตำบล เช่น แม่ต้าน, แม่หละ"
+                    class="flex-1 px-3.5 py-2 rounded-xl border border-sky-200 bg-white text-sm outline-none focus:ring-2 focus:ring-sky-400">
+                  <button type="button" onclick="addTambonItem()"
+                    class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-sm transition shrink-0">
+                    ➕ เพิ่มตำบล
+                  </button>
+                </div>
+                <div id="settingsTambonsList" class="flex flex-wrap gap-2 pt-1"></div>
+              </div>
+
               <div class="flex items-center justify-between p-4 rounded-2xl bg-sky-50/50 border border-sky-100">
                 <div>
                   <div class="font-semibold text-sm text-slate-800">📝 เปิดรับการลงทะเบียนหน้าบ้าน</div>
@@ -2236,6 +2252,78 @@
       }
     });
 
+    var currentTambons = [
+      'แม่ต้าน', 'ท่าสองยาง', 'แม่หละ', 'แม่สอง', 'แม่วะหลวง', 'แม่อุสุ', 'หนองบัว', 'อื่นๆ'
+    ];
+
+    function populateTambonSelects() {
+      var selectConfigs = [
+        { id: 'regTambon', placeholder: '-- เลือกตำบล --' },
+        { id: 'editTambon', placeholder: '-- เลือกตำบล --' },
+        { id: 'filterTambon', placeholder: '📍 ทุกตำบล' },
+        { id: 'mapFilterTambon', placeholder: 'ทุกตำบล' },
+        { id: 'evacTambon', placeholder: '🚨 ทุกตำบล (ทั้งอำเภอ)' },
+        { id: 'ecTambon', placeholder: '' }
+      ];
+      selectConfigs.forEach(function(cfg) {
+        var sel = document.getElementById(cfg.id);
+        if (!sel) return;
+        var prev = sel.value;
+        var opts = cfg.placeholder ? ('<option value="">' + cfg.placeholder + '</option>') : '';
+        for (var i = 0; i < currentTambons.length; i++) {
+          var t = currentTambons[i];
+          var label = (cfg.id === 'evacTambon') ? ('ต.' + t) : t;
+          opts += '<option value="' + escapeHtml(t) + '">' + escapeHtml(label) + '</option>';
+        }
+        if (prev && currentTambons.indexOf(prev) === -1) {
+          opts += '<option value="' + escapeHtml(prev) + '">' + escapeHtml(prev) + '</option>';
+        }
+        sel.innerHTML = opts;
+        if (prev) sel.value = prev;
+      });
+      if (typeof applyDisasterTambonScope === 'function') applyDisasterTambonScope();
+    }
+
+    function renderSettingsTambons() {
+      var box = document.getElementById('settingsTambonsList');
+      if (!box) return;
+      if (currentTambons.length === 0) {
+        box.innerHTML = '<span class="text-xs text-slate-400">ยังไม่มีรายชื่อตำบล</span>';
+        return;
+      }
+      box.innerHTML = currentTambons.map(function(t, idx) {
+        return '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-sky-200 text-xs font-medium text-sky-900 shadow-sm">' +
+          '<span>📍 ' + escapeHtml(t) + '</span>' +
+          '<button type="button" onclick="removeTambonItem(' + idx + ')" class="w-4 h-4 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-600 text-[10px] font-bold flex items-center justify-center">✕</button>' +
+          '</span>';
+      }).join('');
+    }
+
+    function addTambonItem() {
+      var inp = document.getElementById('newTambonInput');
+      if (!inp) return;
+      var val = inp.value.trim().replace(/^ต\./, '');
+      if (!val) { showToast('กรุณากรอกชื่อตำบล', 'warning'); return; }
+      if (currentTambons.indexOf(val) !== -1) {
+        showToast('มีตำบลนี้อยู่แล้ว', 'warning');
+        return;
+      }
+      currentTambons.push(val);
+      inp.value = '';
+      renderSettingsTambons();
+      populateTambonSelects();
+    }
+
+    function removeTambonItem(idx) {
+      if (currentTambons.length <= 1) {
+        showToast('ต้องมีรายชื่อตำบลอย่างน้อย 1 ตำบล', 'warning');
+        return;
+      }
+      currentTambons.splice(idx, 1);
+      renderSettingsTambons();
+      populateTambonSelects();
+    }
+
     var currentHealthInsurances = [
       'บัตรทอง (UC)',
       'สิทธิข้าราชการ / รัฐวิสาหกิจ',
@@ -2290,6 +2378,9 @@
       inp.value = '';
       renderSettingsHealthInsurances();
       populateHealthInsuranceSelects();
+      populateTambonSelects();
+      renderSettingsTambons();
+      populateTambonSelects();
       currentFacilityPins = (cfg.facility_pins && typeof cfg.facility_pins === 'object') ? cfg.facility_pins : {};
       renderSettingsFacilityPins();
       renderSettingsFacilityLineTargets();
@@ -2666,6 +2757,10 @@
           if (cfg && Array.isArray(cfg.health_insurances)) {
             currentHealthInsurances = cfg.health_insurances;
             populateHealthInsuranceSelects();
+          }
+          if (cfg && Array.isArray(cfg.tambons)) {
+            currentTambons = cfg.tambons;
+            populateTambonSelects();
           }
           initLiffAndDeepLink(cfg);
           if (cfg && cfg.stats) {
@@ -4003,6 +4098,9 @@
       if (Array.isArray(cfg.health_insurances)) {
         currentHealthInsurances = cfg.health_insurances.slice();
       }
+      if (Array.isArray(cfg.tambons)) {
+        currentTambons = cfg.tambons.slice();
+      }
       renderSettingsHealthUnits();
       populateHealthUnitSelects();
       renderSettingsFacilityPins();
@@ -4041,6 +4139,7 @@
         new_admin_pin: document.getElementById('setNewPin').value.trim(),
         health_units: currentHealthUnits,
         health_insurances: currentHealthInsurances,
+        tambons: currentTambons,
         facility_pins: (function() {
           var map = {};
           var inputs = document.querySelectorAll('#settingsFacilityPinsList input[data-facpin-unit]');
